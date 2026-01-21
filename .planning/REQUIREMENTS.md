@@ -75,17 +75,17 @@
 | Auto-installing target platforms | User responsibility; we detect, not install |
 | GUI/web interface | CLI only; hobos travel light |
 
-## Traceability
+ ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLI-01 | Phase 1 | Pending |
-| CLI-02 | Phase 1 | Pending |
-| CLI-03 | Phase 1 | Pending |
-| CLI-04 | Phase 1 | Pending |
-| CLI-05 | Phase 1 | Pending |
-| CLI-06 | Phase 1 | Pending |
-| CLI-07 | Phase 1 | Pending |
+| CLI-01 | Phase 1 | Complete |
+| CLI-02 | Phase 1 | Complete |
+| CLI-03 | Phase 1 | Complete |
+| CLI-04 | Phase 1 | Complete |
+| CLI-05 | Phase 1 | Complete |
+| CLI-06 | Phase 1 | Complete |
+| CLI-07 | Phase 1 | Complete |
 | GSD-01 | Phase 2 | Pending |
 | GSD-02 | Phase 2 | Pending |
 | GSD-03 | Phase 2 | Pending |
