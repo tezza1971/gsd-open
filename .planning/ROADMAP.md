@@ -46,12 +46,13 @@ Plans:
   3. User with outdated GSD sees freshness warning with option to update
   4. User sees clear message if OpenCode is not found on system
   5. User with incomplete GSD installation sees validation errors listing missing files
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — GSD detection module (auto-detect, validate, freshness)
-- [ ] 02-02-PLAN.md — OpenCode detection module (PATH search, cross-platform)
-- [ ] 02-03-PLAN.md — Detection orchestration and visual reporting
+- [x] 02-01-PLAN.md — GSD detection module (auto-detect, validate, freshness)
+- [x] 02-02-PLAN.md — OpenCode detection module (PATH search, cross-platform)
+- [x] 02-03-PLAN.md — Detection orchestration and visual reporting
+- [ ] 02-04-PLAN.md — Gap closure: stale GSD interactive update handler
 
 ### Phase 3: Transpilation
 **Goal**: GSD context files are transformed into valid OpenCode configuration
@@ -106,7 +107,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-01-21 |
-| 2. Detection | 0/3 | Not started | - |
+| 2. Detection | 3/4 | Gap closure | - |
 | 3. Transpilation | 0/3 | Not started | - |
 | 4. Reports | 0/TBD | Not started | - |
 | 5. LLM Enhancement | 0/TBD | Not started | - |
