@@ -7,9 +7,10 @@ high-end context engineering of
 [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) and
 transpiles it for "economy-class" AI platforms.
 
-When your Claude Code token usage looks like a phone number and you’re staring
-down a rate-limit lockout, `gfh` ensures your fallback tools (OpenCode, Cursor,
-etc.) have been briefed on your mission.
+When your Claude Code token usage looks like a phone number and you're staring
+down a rate-limit lockout, `gfh` ensures your fallback tools have been briefed
+on your mission. And if you're stone broke and can't afford Claude Code at all?
+This is your gateway to structured context engineering.
 
 ## Are you lost?
 
@@ -19,25 +20,31 @@ we can all benefit.
 
 ## The Workflow
 
-1. **Consent:** You agree to the "Hobo Manifesto" (Disclaimer).
-2. **Freshness Check:** The script runs the official GSD update to ensure you
-   aren't migrating stale logic.
-3. **Detection:** It scans your system for supported "Hobo-tier" platforms.
-4. **Transpilation:** It reads your GSD files from your Claude profile and
-   adapts them (slash commands, system prompts, and rules) to your other tools.
-5. **The Hobo Report:** A summary of what successfully migrated and what
-   features were too "high-society" for your fallback tools to handle.
+1. **The Hobo Manifesto:** You agree to the disclaimer. This is expectations
+   management and a courtesy to the OG GSD author.
+2. **GSD Detection:** Finds your GSD installation at `~/.claude/` (or asks where
+   you stashed it). Checks freshness and offers to update if needed.
+3. **Platform Detection:** Scans your system for supported hobo-tier platforms.
+4. **Transpilation:** Parses your GSD context files into an intermediate
+   representation, then transforms them into your target platform's format.
+   Detects conflicts, backs up existing configs, asks before overwriting.
+5. **The Hobo Report:** A shortfall analysis showing what migrated and what
+   features were too "high-society" for your fallback tools.
+6. **LLM Enhancement (Optional):** If you've got spare change for tokens, you
+   can run an optional LLM pass to improve the transpilation. Provide an
+   OpenAI-compatible API key (used in-memory, then discarded) and iterate until
+   you're satisfied. No API key? We'll tip you on running a local LLM.
 
 ## Supported Targets
 
-| Rank | Platform        | Status      | Notes                                                |
-| ---- | --------------- | ----------- | ---------------------------------------------------- |
-| 1    | **OpenCode**    | Baseline    | The gold standard for low-overhead productivity.     |
-| 2    | **Antigravity** | Target      | High capability, low cost.                           |
-| 3    | **Cursor**      | Target      | For the hobo who found a $20 bill on the sidewalk.   |
-| 4    | **Windsurf**    | Target      | Flow-state friendly.                                 |
-| 5    | **ChatLLM**     | Target      | The ultimate fallback.                               |
-| ?    | **VS Code**     | Researching | Can it handle slash commands? We're looking into it. |
+| Rank | Platform        | Status       | Notes                                                |
+| ---- | --------------- | ------------ | ---------------------------------------------------- |
+| 1    | **OpenCode**    | **v1 (MVP)** | The gold standard for low-overhead productivity.     |
+| 2    | **Antigravity** | v2 Planned   | High capability, low cost.                           |
+| 3    | **Cursor**      | v2 Planned   | For the hobo who found a $20 bill on the sidewalk.   |
+| 4    | **Windsurf**    | v2 Planned   | Flow-state friendly.                                 |
+| 5    | **ChatLLM**     | v2 Planned   | The ultimate fallback.                               |
+| ?    | **VS Code**     | Researching  | Can it handle slash commands? We're looking into it. |
 
 ## Usage
 
@@ -46,6 +53,51 @@ Run via npx:
 ```bash
 npx gsd-for-hobos
 ```
+
+### Options
+
+```
+--help       Show usage information
+--version    Show current version
+--dry-run    Preview changes without writing anything
+--quiet      Suppress output (except errors)
+-v           Verbose mode for debugging
+```
+
+### Exit Codes
+
+| Code | Meaning                              |
+| ---- | ------------------------------------ |
+| 0    | Success — transpilation complete     |
+| 1    | Warnings — partial success           |
+| 2+   | Errors — something went wrong        |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│  ALGORITHMIC PASS (always runs)                     │
+│  - Quiet transpilation                              │
+│  - Basic shortfall report                           │
+└─────────────────────────────────────────────────────┘
+                        ↓
+          "Want to enhance with LLM?"
+                        ↓
+┌─────────────────────────────────────────────────────┐
+│  LLM PASS (optional)                                │
+│  - Reviews algorithmic attempt                      │
+│  - Interactive refinement loop                      │
+│  - Richer final report                              │
+└─────────────────────────────────────────────────────┘
+```
+
+## Development Status
+
+This project is under active development. See `.planning/ROADMAP.md` for the
+current status and phase breakdown.
+
+**Current phase:** Not started
+**Requirements:** 28 total across 5 phases
 
 ## License
 
@@ -58,10 +110,5 @@ pull request.
 
 ## Acknowledgments
 
-- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done)
-- [OpenCode](https://opencode.ai/)
-- [Antigravity](https://antigravity.google/)
-- [Cursor](https://cursor.com/)
-- [Windsurf](https://windsurf.com/)
-- [ChatLLM](https://chatllm.abacus.ai/)
-- [VS Code](https://github.com/microsoft/vscode)
+- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) — The OG
+- [OpenCode](https://opencode.ai/) — v1 target platform
