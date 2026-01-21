@@ -13,7 +13,7 @@ Transform GSD context engineering from Claude Code into OpenCode format through 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - CLI skeleton with Hobo Manifesto and standard flags
-- [ ] **Phase 2: Detection** - Find GSD and OpenCode installations, validate completeness
+- [x] **Phase 2: Detection** - Find GSD and OpenCode installations, validate completeness
 - [ ] **Phase 3: Transpilation** - Parse GSD, transform to OpenCode, handle conflicts
 - [ ] **Phase 4: Reports** - Console output with shortfall analysis, markdown export
 - [ ] **Phase 5: LLM Enhancement** - Optional API-powered refinement loop
@@ -52,7 +52,7 @@ Plans:
 - [x] 02-01-PLAN.md — GSD detection module (auto-detect, validate, freshness)
 - [x] 02-02-PLAN.md — OpenCode detection module (PATH search, cross-platform)
 - [x] 02-03-PLAN.md — Detection orchestration and visual reporting
-- [ ] 02-04-PLAN.md — Gap closure: stale GSD interactive update handler
+- [x] 02-04-PLAN.md — Gap closure: stale GSD interactive update handler
 
 ### Phase 3: Transpilation
 **Goal**: GSD context files are transformed into valid OpenCode configuration
@@ -107,7 +107,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-01-21 |
-| 2. Detection | 3/4 | Gap closure | - |
+| 2. Detection | 4/4 | Complete | 2026-01-22 |
 | 3. Transpilation | 0/3 | Not started | - |
 | 4. Reports | 0/TBD | Not started | - |
 | 5. LLM Enhancement | 0/TBD | Not started | - |
