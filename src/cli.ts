@@ -3,6 +3,7 @@
 import { program } from 'commander';
 import { setLogLevel, log } from './lib/logger.js';
 import { ExitCode } from './lib/exit-codes.js';
+import { showManifesto } from './lib/manifesto.js';
 
 program
   .name('gfh')
@@ -15,11 +16,18 @@ program
     try {
       setLogLevel(options.verbose, options.quiet);
 
+      const accepted = await showManifesto();
+
+      if (!accepted) {
+        process.exitCode = ExitCode.SUCCESS;
+        return;
+      }
+
       if (options.verbose) {
         log.verbose('Verbose mode enabled');
       }
 
-      log.info('GSD-for-Hobos initialized');
+      log.success('Ready to transpile!');
 
       if (options.dryRun) {
         log.info('[DRY RUN] Would proceed with transpilation');
