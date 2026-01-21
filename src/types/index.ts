@@ -20,3 +20,13 @@ export interface OpenCodeDetectionResult {
   path?: string;
   reason?: string;
 }
+
+/**
+ * Aggregated validation report for all detection results.
+ * Used by reporter to format and display detection status.
+ */
+export interface ValidationReport {
+  gsd: GSDDetectionResult;
+  opencode: OpenCodeDetectionResult;
+  ready: boolean;
+}
