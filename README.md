@@ -59,9 +59,9 @@ pull request.
 ## Acknowledgments
 
 - [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done)
-- [OpenCode](https://github.com/open-code/open-code)
-- [Antigravity](https://github.com/antigravity/antigravity)
-- [Cursor](https://github.com/cursor-ai/cursor)
-- [Windsurf](https://github.com/windsurfai/windsurf)
-- [ChatLLM](https://github.com/chatllm/chatllm)
+- [OpenCode](https://opencode.ai/)
+- [Antigravity](https://antigravity.google/)
+- [Cursor](https://cursor.com/)
+- [Windsurf](https://windsurf.com/)
+- [ChatLLM](https://chatllm.abacus.ai/)
 - [VS Code](https://github.com/microsoft/vscode)
