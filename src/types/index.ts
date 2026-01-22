@@ -273,6 +273,19 @@ export interface TranspileOptions {
 }
 
 /**
+ * Metadata about transformed artifacts for reporting.
+ * Populated by orchestrator to provide artifact lists for status sections.
+ */
+export interface TransformedArtifactsMetadata {
+  /** Command names that were transformed (e.g., '/gsd:plan-phase') */
+  commands: string[];
+  /** Agent names that were transformed */
+  agents: string[];
+  /** Model IDs that were transformed */
+  models: string[];
+}
+
+/**
  * Result of the transpilation process.
  */
 export interface TranspileResult {
@@ -288,4 +301,15 @@ export interface TranspileResult {
   warnings: string[];
   /** Gap tracking for unmapped/approximated content */
   gaps?: TransformGaps;
+  /**
+   * OpenCode configuration generated (for markdown export).
+   * Populated by orchestrator when reporting needs full config access.
+   */
+  opencode?: OpenCodeConfig;
+  /**
+   * Transformed artifacts metadata for reporting.
+   * Provides simple lists of artifact names for iteration in status sections.
+   * Populated by orchestrator from the generated OpenCode config.
+   */
+  transformedArtifacts?: TransformedArtifactsMetadata;
 }
