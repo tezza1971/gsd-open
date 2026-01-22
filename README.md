@@ -44,6 +44,7 @@ Full documentation is available in the [`docs/`](./docs/) folder:
 
 | Guide | Description |
 |-------|-------------|
+| [Configuration Guide](./docs/configuration.md) | Directory structure and configuration files |
 | [API Keys](./docs/api-keys.md) | Environment variables for LLM enhancement |
 | [CLI Reference](./docs/cli-reference.md) | All commands, flags, and exit codes |
 | [LLM Enhancement](./docs/llm-enhancement.md) | Optional AI-powered refinement |

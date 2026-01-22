@@ -6,6 +6,7 @@ Welcome to the GSD Open (gsdo) documentation. This guide covers everything you n
 
 | Document | Description |
 |----------|-------------|
+| [Configuration Guide](./configuration.md) | Directory structure and configuration files |
 | [API Keys Guide](./api-keys.md) | Environment variables for LLM enhancement |
 | [CLI Reference](./cli-reference.md) | All commands, flags, and exit codes |
 | [LLM Enhancement](./llm-enhancement.md) | Optional AI-powered refinement loop |
@@ -74,12 +75,24 @@ If you have an API key, you can run an LLM enhancement pass:
 
 See [LLM Enhancement](./llm-enhancement.md) for details.
 
-## Output Files
+## Directory Structure
+
+### Global User Configuration
+
+```
+~/.gsdo/                     # Global gsdo configuration
+└── transforms.json          # User-defined transform rule overrides
+```
+
+The `~/.gsdo/` directory stores your personal configuration that applies across all projects. Currently, it contains:
+- **transforms.json** - Your custom transform rule overrides that take precedence over the default rules
+
+### Project-Specific Output
 
 After transpilation, you'll find:
 
 ```
-.opencode/                    # OpenCode config directory
+.opencode/                    # OpenCode config directory (project-specific)
 ├── agents.json              # Transpiled agents
 ├── commands.json            # Transpiled commands
 ├── models.json              # Model configurations
@@ -91,6 +104,8 @@ After transpilation, you'll find:
 └── {timestamp}/
     └── ...
 ```
+
+LLM-generated rules are stored per-project in `.opencode/llm-rules.json` because they're specific to the GSD context being transpiled for that project.
 
 ## Getting Help
 
