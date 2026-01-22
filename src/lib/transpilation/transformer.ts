@@ -15,7 +15,12 @@ import type {
   GSDModel,
   GSDConfig,
 } from './ir-types.js';
-import type { TransformResult, OpenCodeConfig, TransformGaps } from '../../types/index.js';
+import type {
+  TransformResult,
+  OpenCodeConfig,
+  TransformGaps,
+  GapCategory,
+} from '../../types/index.js';
 import defaultRules from './transform-rules.json' with { type: 'json' };
 
 /**
@@ -28,12 +33,18 @@ interface TransformRules {
   commands: SectionRules;
   models: SectionRules;
   config: SectionRules;
+  fallback: {
+    category: GapCategory;
+    suggestion: string;
+  };
 }
 
 interface SectionRules {
   fieldMappings: Record<string, string>;
   defaults: Record<string, unknown>;
   approximations: Record<string, string>;
+  categories: Record<string, GapCategory>;
+  suggestions: Record<string, string>;
 }
 
 /**
@@ -66,6 +77,7 @@ function mergeRules(base: TransformRules, override: Partial<TransformRules>): Tr
     commands: mergeSectionRules(base.commands, override.commands),
     models: mergeSectionRules(base.models, override.models),
     config: mergeSectionRules(base.config, override.config),
+    fallback: override.fallback ?? base.fallback,
   };
 }
 
@@ -79,7 +91,23 @@ function mergeSectionRules(
     fieldMappings: { ...base.fieldMappings, ...override.fieldMappings },
     defaults: { ...base.defaults, ...override.defaults },
     approximations: { ...base.approximations, ...override.approximations },
+    categories: { ...base.categories, ...override.categories },
+    suggestions: { ...base.suggestions, ...override.suggestions },
   };
+}
+
+/**
+ * Get category for a field, with fallback to default.
+ */
+function getCategory(rules: SectionRules, fieldName: string, fallback: GapCategory): GapCategory {
+  return rules.categories?.[fieldName] ?? fallback;
+}
+
+/**
+ * Get suggestion for a field, with fallback to default.
+ */
+function getSuggestion(rules: SectionRules, fieldName: string, fallback: string): string {
+  return rules.suggestions?.[fieldName] ?? fallback;
 }
 
 /**
@@ -109,10 +137,10 @@ export async function transformToOpenCode(ir: GSDIntermediate): Promise<Transfor
   }
 
   // Transform each section
-  const agents = transformAgents(ir.agents, rules.agents, gaps, errors, warnings);
-  const commands = transformCommands(ir.commands, rules.commands, gaps, errors, warnings);
-  const models = transformModels(ir.models, rules.models, gaps, errors, warnings);
-  const settings = transformConfig(ir.config, rules.config, gaps, warnings);
+  const agents = transformAgents(ir.agents, rules.agents, rules.fallback, gaps, errors, warnings);
+  const commands = transformCommands(ir.commands, rules.commands, rules.fallback, gaps, errors, warnings);
+  const models = transformModels(ir.models, rules.models, rules.fallback, gaps, errors, warnings);
+  const settings = transformConfig(ir.config, rules.config, rules.fallback, gaps, warnings);
 
   const opencode: OpenCodeConfig = {
     agents,
@@ -136,10 +164,13 @@ export async function transformToOpenCode(ir: GSDIntermediate): Promise<Transfor
 function transformAgents(
   agents: GSDAgent[],
   rules: SectionRules,
+  fallback: TransformRules['fallback'],
   gaps: TransformGaps,
   errors: Array<{ message: string; stack?: string }>,
   warnings: string[]
 ): OpenCodeConfig['agents'] {
+  const sourceFile = 'agents.xml';
+
   return agents.map((agent) => {
     // Validate required fields
     if (!agent.name) {
@@ -175,6 +206,8 @@ function transformAgents(
         original: `agent.${agent.name}.tools`,
         approximatedAs: 'tools array',
         reason: rules.approximations.tools ?? 'Tools mapped directly',
+        sourceFile,
+        category: getCategory(rules, 'tools', fallback.category),
       });
     }
 
@@ -184,6 +217,8 @@ function transformAgents(
         original: `agent.${agent.name}.config`,
         approximatedAs: 'config object',
         reason: rules.approximations.config ?? 'Config merged into agent',
+        sourceFile,
+        category: getCategory(rules, 'config', fallback.category),
       });
     }
 
@@ -197,10 +232,13 @@ function transformAgents(
 function transformCommands(
   commands: GSDCommand[],
   rules: SectionRules,
+  fallback: TransformRules['fallback'],
   gaps: TransformGaps,
   errors: Array<{ message: string; stack?: string }>,
   warnings: string[]
 ): OpenCodeConfig['commands'] {
+  const sourceFile = 'commands.xml';
+
   return commands.map((command) => {
     // Validate required fields
     if (!command.name) {
@@ -215,6 +253,8 @@ function transformCommands(
         original: `command.${command.name}.variables`,
         approximatedAs: 'template literals in promptTemplate',
         reason: rules.approximations.variables ?? 'Variables inlined',
+        sourceFile,
+        category: getCategory(rules, 'variables', fallback.category),
       });
 
       // Add variable descriptions as comments in template
@@ -239,6 +279,8 @@ function transformCommands(
         original: `command.${command.name}.agent`,
         approximatedAs: 'config.agent',
         reason: rules.approximations.agent ?? 'Agent stored in config',
+        sourceFile,
+        category: getCategory(rules, 'agent', fallback.category),
       });
     }
 
@@ -252,10 +294,13 @@ function transformCommands(
 function transformModels(
   models: GSDModel[],
   rules: SectionRules,
+  fallback: TransformRules['fallback'],
   gaps: TransformGaps,
   errors: Array<{ message: string; stack?: string }>,
   _warnings: string[]
 ): OpenCodeConfig['models'] {
+  const sourceFile = 'models.xml';
+
   return models.map((model) => {
     // Validate required fields
     if (!model.name) {
@@ -281,6 +326,8 @@ function transformModels(
         original: `model.${model.name}.config`,
         approximatedAs: 'config object',
         reason: rules.approximations.config ?? 'Config merged into model',
+        sourceFile,
+        category: getCategory(rules, 'config', fallback.category),
       });
     }
 
@@ -294,9 +341,11 @@ function transformModels(
 function transformConfig(
   config: GSDConfig,
   rules: SectionRules,
+  fallback: TransformRules['fallback'],
   gaps: TransformGaps,
   warnings: string[]
 ): OpenCodeConfig['settings'] {
+  const sourceFile = 'config.xml';
   const settings: OpenCodeConfig['settings'] = {};
 
   // Direct mappings
@@ -309,7 +358,14 @@ function transformConfig(
 
   // Handle permissions (gap - not supported)
   if (config.permissions && Object.keys(config.permissions).length > 0) {
-    gaps.unmappedFields.push('config.permissions');
+    gaps.unmappedFields.push({
+      field: 'config.permissions',
+      value: config.permissions,
+      reason: 'GSD permissions not supported by OpenCode',
+      sourceFile,
+      category: getCategory(rules, 'permissions', fallback.category),
+      suggestion: getSuggestion(rules, 'permissions', fallback.suggestion),
+    });
     warnings.push(
       `GSD permissions not supported by OpenCode: ${Object.keys(config.permissions).join(', ')}`
     );
@@ -322,6 +378,8 @@ function transformConfig(
       original: 'config.custom',
       approximatedAs: 'merged into settings',
       reason: rules.approximations.custom ?? 'Custom config merged',
+      sourceFile,
+      category: getCategory(rules, 'custom', fallback.category),
     });
   }
 

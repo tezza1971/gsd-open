@@ -187,7 +187,7 @@ describe('transformer', () => {
       expect(result.opencode?.settings.keybindings).toEqual({ save: 'ctrl+s' });
     });
 
-    it('tracks unmapped permissions as gap', async () => {
+    it('tracks unmapped permissions as gap with enhanced fields', async () => {
       const ir = createTestIR({
         config: {
           permissions: { fileAccess: true, networkAccess: false },
@@ -197,7 +197,11 @@ describe('transformer', () => {
       const result = await transformToOpenCode(ir);
 
       expect(result.success).toBe(true);
-      expect(result.gaps.unmappedFields).toContain('config.permissions');
+      const permissionGap = result.gaps.unmappedFields.find((gap) => gap.field === 'config.permissions');
+      expect(permissionGap).toBeDefined();
+      expect(permissionGap?.sourceFile).toBe('config.xml');
+      expect(permissionGap?.category).toBeDefined();
+      expect(permissionGap?.suggestion).toBeDefined();
       expect(result.warnings.length).toBeGreaterThan(0);
     });
 
