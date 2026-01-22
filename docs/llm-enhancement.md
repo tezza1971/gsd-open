@@ -319,6 +319,7 @@ LLM enhancement is a starting point. You can:
 | Provider | Default Model |
 |----------|--------------|
 | OpenAI | `gpt-4-turbo` |
+| Google Gemini | `gemini-2.0-flash` |
 | Anthropic | `claude-3-5-sonnet-20241022` |
 | OpenRouter | `anthropic/claude-3.5-sonnet` |
 | Azure | Configured via `AZURE_OPENAI_DEPLOYMENT` |

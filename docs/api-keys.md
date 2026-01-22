@@ -7,6 +7,7 @@ The LLM enhancement feature requires an API key from a supported provider. This 
 | Provider | Environment Variable | Endpoint |
 |----------|---------------------|----------|
 | OpenAI | `OPENAI_API_KEY` | `https://api.openai.com/v1` |
+| Google Gemini | `GEMINI_API_KEY` or `GOOGLE_API_KEY` | `https://generativelanguage.googleapis.com/v1beta/openai` |
 | Anthropic | `ANTHROPIC_API_KEY` | `https://api.anthropic.com/v1` |
 | OpenRouter | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` |
 | Azure OpenAI | `AZURE_OPENAI_API_KEY` + `AZURE_OPENAI_ENDPOINT` | (user-specified) |
@@ -16,9 +17,10 @@ The LLM enhancement feature requires an API key from a supported provider. This 
 When you accept the LLM enhancement prompt, gfh scans for API keys in this order:
 
 1. **OpenAI** (`OPENAI_API_KEY`)
-2. **Anthropic** (`ANTHROPIC_API_KEY`)
-3. **OpenRouter** (`OPENROUTER_API_KEY`)
-4. **Azure OpenAI** (`AZURE_OPENAI_API_KEY`)
+2. **Google Gemini** (`GEMINI_API_KEY`, `GOOGLE_API_KEY`)
+3. **Anthropic** (`ANTHROPIC_API_KEY`)
+4. **OpenRouter** (`OPENROUTER_API_KEY`)
+5. **Azure OpenAI** (`AZURE_OPENAI_API_KEY`)
 
 The first detected key is offered for confirmation. You can decline and try the next provider.
 
@@ -47,6 +49,36 @@ set OPENAI_API_KEY=sk-...
 2. Sign in or create an account
 3. Navigate to API Keys
 4. Create a new secret key
+
+### Google Gemini
+
+For Gemini models via Google's OpenAI-compatible API.
+
+**Environment Variable:**
+```bash
+# Linux/macOS
+export GEMINI_API_KEY="your-gemini-key"
+# or
+export GOOGLE_API_KEY="your-google-key"
+
+# Windows PowerShell
+$env:GEMINI_API_KEY="your-gemini-key"
+# or
+$env:GOOGLE_API_KEY="your-google-key"
+
+# Windows CMD
+set GEMINI_API_KEY=your-gemini-key
+```
+
+**Default Model:** `gemini-2.0-flash`
+
+**Get an API Key:**
+1. Go to [aistudio.google.com](https://aistudio.google.com)
+2. Sign in with your Google account
+3. Click "Get API key" in the left sidebar
+4. Create a new API key or use an existing one
+
+**Note:** gfh uses Google's OpenAI-compatible endpoint, so standard chat completions requests work seamlessly.
 
 ### Anthropic
 
@@ -225,6 +257,8 @@ This skips the enhancement prompt entirely and goes straight to markdown export.
 | Variable | Required | Provider | Description |
 |----------|----------|----------|-------------|
 | `OPENAI_API_KEY` | For OpenAI | OpenAI | API key starting with `sk-` |
+| `GEMINI_API_KEY` | For Gemini | Google | Gemini API key from AI Studio |
+| `GOOGLE_API_KEY` | For Gemini | Google | Alternative to GEMINI_API_KEY |
 | `ANTHROPIC_API_KEY` | For Anthropic | Anthropic | API key starting with `sk-ant-` |
 | `OPENROUTER_API_KEY` | For OpenRouter | OpenRouter | API key starting with `sk-or-` |
 | `AZURE_OPENAI_API_KEY` | For Azure | Azure | Azure resource API key |

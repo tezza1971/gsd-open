@@ -104,6 +104,7 @@ After transpilation, gfh can optionally enhance results using an LLM. Set one of
 | Provider | Environment Variable |
 |----------|---------------------|
 | OpenAI | `OPENAI_API_KEY` |
+| Google Gemini | `GEMINI_API_KEY` or `GOOGLE_API_KEY` |
 | Anthropic | `ANTHROPIC_API_KEY` |
 | OpenRouter | `OPENROUTER_API_KEY` |
 | Azure OpenAI | `AZURE_OPENAI_API_KEY` + `AZURE_OPENAI_ENDPOINT` |

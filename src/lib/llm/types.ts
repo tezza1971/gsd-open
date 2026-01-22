@@ -42,6 +42,12 @@ export const PROVIDER_CONFIGS: Record<string, APIProvider> = {
     endpoint: 'https://api.openai.com/v1',
     testModel: 'gpt-4-turbo'
   },
+  gemini: {
+    name: 'Google Gemini',
+    envVars: ['GEMINI_API_KEY', 'GOOGLE_API_KEY'],
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/openai',
+    testModel: 'gemini-2.0-flash'
+  },
   anthropic: {
     name: 'Anthropic',
     envVars: ['ANTHROPIC_API_KEY'],
@@ -65,6 +71,6 @@ export const PROVIDER_CONFIGS: Record<string, APIProvider> = {
 /**
  * Priority order for automatic provider detection
  */
-export const PROVIDER_PRIORITY = ['openai', 'anthropic', 'openrouter', 'azure'] as const;
+export const PROVIDER_PRIORITY = ['openai', 'gemini', 'anthropic', 'openrouter', 'azure'] as const;
 
 export type ProviderKey = typeof PROVIDER_PRIORITY[number];
