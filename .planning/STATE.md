@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-21)
 ## Current Position
 
 Phase: 5 of 5 (LLM Enhancement)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-01-22 - Completed 05-01-PLAN.md (API Configuration)
+Last activity: 2026-01-22 - Completed 05-02-PLAN.md (Enhancement Core)
 
-Progress: ██████████████████░░ 93%
+Progress: ███████████████████░ 95%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: 9.4 min
-- Total execution time: 2.20 hours
+- Total plans completed: 15
+- Average duration: 9.0 min
+- Total execution time: 2.25 hours
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: ██████████████████░░ 93%
 | 2 | 4 | 30 min | 7.5 min |
 | 3 | 3 | 40 min | 13.3 min |
 | 4 | 4 | 38 min | 9.5 min |
-| 5 | 1 | 2 min | 2.0 min |
+| 5 | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 12min (04-02), 7min (04-03), 5min (04-04), 2min (05-01)
-- Phase 5 started strong with fast API config setup
+- Last 5 plans: 7min (04-03), 5min (04-04), 2min (05-01), 3min (05-02)
+- Phase 5 maintaining fast velocity with focused LLM implementation
 
 *Updated after each plan completion*
 
@@ -104,6 +104,12 @@ Recent decisions affecting current work:
 - [05-01]: Native fetch API for endpoint testing (no external HTTP library)
 - [05-01]: Password prompt for manual API key entry (masked input)
 - [05-01]: Return null on failures for graceful degradation
+- [05-02]: 24-hour TTL for OpenCode docs cache (86400 seconds default)
+- [05-02]: Manual schema validation instead of zod/ajv for MVP simplicity
+- [05-02]: File-based cache using mtime for TTL checks
+- [05-02]: Conversation history persists across refinement iterations
+- [05-02]: Validation errors fed back to LLM for self-correction
+- [05-02]: Simple append merge strategy for llm-rules.json
 
 ### Pending Todos
 
@@ -116,5 +122,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-22
-Stopped at: Completed 05-01-PLAN.md (API Configuration) - Multi-provider LLM setup complete
+Stopped at: Completed 05-02-PLAN.md (Enhancement Core) - LLM orchestrator with caching and validation
 Resume file: None
