@@ -205,13 +205,29 @@ async function parseXMLFile(
 ): Promise<void> {
   const content = await fs.readFile(filePath, 'utf-8');
 
-  // Detect what type of XML file this is
-  if (content.includes('<agent>') || content.includes('<agent ')) {
-    parseAgentXML(content, relativePath, collections.agents, gaps, errors);
-  } else if (content.includes('<command>') || content.includes('<command ')) {
-    parseCommandXML(content, relativePath, collections.commands, gaps, errors);
-  } else if (content.includes('<model>') || content.includes('<model ')) {
-    parseModelXML(content, relativePath, collections.models, gaps, errors);
+  // Detect what type of XML file this is by checking the ROOT tag
+  // We need to check the first opening tag, not just any occurrence,
+  // because command XML can have <agent> as a child tag
+  const rootTagMatch = content.match(/^\s*<(agent|command|model)[\s>]/);
+
+  if (rootTagMatch) {
+    const rootTag = rootTagMatch[1];
+    if (rootTag === 'agent') {
+      parseAgentXML(content, relativePath, collections.agents, gaps, errors);
+    } else if (rootTag === 'command') {
+      parseCommandXML(content, relativePath, collections.commands, gaps, errors);
+    } else if (rootTag === 'model') {
+      parseModelXML(content, relativePath, collections.models, gaps, errors);
+    }
+  } else {
+    // Fallback to legacy detection for backwards compatibility
+    if (content.includes('<agent>') || content.includes('<agent ')) {
+      parseAgentXML(content, relativePath, collections.agents, gaps, errors);
+    } else if (content.includes('<command>') || content.includes('<command ')) {
+      parseCommandXML(content, relativePath, collections.commands, gaps, errors);
+    } else if (content.includes('<model>') || content.includes('<model ')) {
+      parseModelXML(content, relativePath, collections.models, gaps, errors);
+    }
   }
 }
 
