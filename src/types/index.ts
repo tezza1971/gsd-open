@@ -60,3 +60,98 @@ export interface GSDParseResult {
   /** Non-critical warnings */
   warnings: string[];
 }
+
+/**
+ * OpenCode agent configuration.
+ */
+export interface OpenCodeAgent {
+  name: string;
+  model: string;
+  systemMessage: string;
+  description?: string;
+  temperature?: number;
+  maxTokens?: number;
+  tools?: string[];
+  config?: Record<string, unknown>;
+}
+
+/**
+ * OpenCode command configuration.
+ */
+export interface OpenCodeCommand {
+  name: string;
+  description: string;
+  promptTemplate: string;
+  config?: Record<string, unknown>;
+}
+
+/**
+ * OpenCode model configuration.
+ */
+export interface OpenCodeModel {
+  modelId: string;
+  provider: string;
+  endpoint?: string;
+  config?: Record<string, unknown>;
+}
+
+/**
+ * OpenCode settings configuration.
+ */
+export interface OpenCodeSettings {
+  theme?: Record<string, unknown>;
+  keybindings?: Record<string, string>;
+  [key: string]: unknown;
+}
+
+/**
+ * Complete OpenCode configuration structure.
+ */
+export interface OpenCodeConfig {
+  agents: OpenCodeAgent[];
+  commands: OpenCodeCommand[];
+  models: OpenCodeModel[];
+  settings: OpenCodeSettings;
+}
+
+/**
+ * Gaps tracking for unmapped or approximated transformations.
+ */
+export interface TransformGaps {
+  /** Fields from GSD that have no equivalent in OpenCode */
+  unmappedFields: string[];
+  /** Transformations that required approximation */
+  approximations: Array<{
+    original: string;
+    approximatedAs: string;
+    reason: string;
+  }>;
+}
+
+/**
+ * Result of transforming GSD IR to OpenCode configuration.
+ */
+export interface TransformResult {
+  /** Whether transformation succeeded (no errors) */
+  success: boolean;
+  /** Transformed OpenCode configuration */
+  opencode?: OpenCodeConfig;
+  /** Transform errors encountered */
+  errors: Array<{ message: string; stack?: string }>;
+  /** Non-critical warnings */
+  warnings: string[];
+  /** Gap tracking for unmapped/approximated content */
+  gaps: TransformGaps;
+}
+
+/**
+ * Result of emitting OpenCode configuration to JSON files.
+ */
+export interface EmitResult {
+  /** Whether emission succeeded */
+  success: boolean;
+  /** Map of filename to JSON content */
+  files: Record<string, string>;
+  /** Emit errors encountered */
+  errors: Array<{ message: string }>;
+}
