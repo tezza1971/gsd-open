@@ -64,10 +64,12 @@ Plans:
   3. /gsdo command reads cached OpenCode docs from `~/.gsdo/cache/`
   4. /gsdo uses OpenCode's configured LLM to analyze all `/gsd-*` commands
   5. /gsdo operates autonomously without requesting user input
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD
+- [ ] 03-01-PLAN.md — Enhancement engine core with context loading and backup
+- [ ] 03-02-PLAN.md — LLM integration and per-command enhancement logic
+- [ ] 03-03-PLAN.md — /gsdo command installation and CLI integration
 
 ### Phase 4: Enhanced Transpilation
 **Goal**: Installer extracts prompt templates and variables from GSD commands
@@ -139,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Core Installer | 3/3 | ✓ Complete | 2026-01-22 |
 | 2. Documentation Cache | 2/2 | ✓ Complete | 2026-01-22 |
-| 3. /gsdo Command | 0/TBD | Not started | - |
+| 3. /gsdo Command | 0/3 | Not started | - |
 | 4. Enhanced Transpilation | 0/TBD | Not started | - |
 | 5. Idempotency | 0/TBD | Not started | - |
 | 6. Exit Logging | 0/TBD | Not started | - |
