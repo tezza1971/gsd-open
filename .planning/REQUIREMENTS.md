@@ -38,7 +38,7 @@
 
 ### Installation & Output
 
-- [ ] **INSTALL-01**: Installer creates `/gsdo` command definition with context references
+- [x] **INSTALL-01**: Installer creates `/gsdo` command definition with context references
 - [x] **INSTALL-02**: Installer reads existing OpenCode `commands.json` if present
 - [x] **INSTALL-03**: Installer adds/updates commands in `commands.json` without breaking existing commands
 - [x] **INSTALL-04**: Installer writes updated `commands.json` to OpenCode config directory
@@ -46,16 +46,16 @@
 
 ### /gsdo Enhancement
 
-- [ ] **ENHANCE-01**: `/gsdo` command reads `~/.gsdo/install.log` for transpilation context
-- [ ] **ENHANCE-02**: `/gsdo` command reads cached OpenCode docs from `~/.gsdo/cache/`
-- [ ] **ENHANCE-03**: `/gsdo` command lists all `/gsd-*` commands from OpenCode's `commands.json`
-- [ ] **ENHANCE-04**: `/gsdo` command uses OpenCode's configured LLM to analyze and enhance commands
+- [x] **ENHANCE-01**: `/gsdo` command reads `~/.gsdo/install.log` for transpilation context
+- [x] **ENHANCE-02**: `/gsdo` command reads cached OpenCode docs from `~/.gsdo/cache/`
+- [x] **ENHANCE-03**: `/gsdo` command lists all `/gsd-*` commands from OpenCode's `commands.json`
+- [x] **ENHANCE-04**: `/gsdo` command uses OpenCode's configured LLM to analyze and enhance commands
 - [ ] **ENHANCE-05**: `/gsdo` command fixes naming issues in transpiled commands
 - [ ] **ENHANCE-06**: `/gsdo` command improves prompt templates for OpenCode patterns
 - [ ] **ENHANCE-07**: `/gsdo` command adds missing parameters to commands
 - [ ] **ENHANCE-08**: `/gsdo` command fixes broken agent/tool references
 - [ ] **ENHANCE-09**: `/gsdo` command updates `commands.json` in place
-- [ ] **ENHANCE-10**: `/gsdo` command operates autonomously without user input
+- [x] **ENHANCE-10**: `/gsdo` command operates autonomously without user input
 
 ### Logging
 
@@ -134,21 +134,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRANS-05 | Phase 1 | Complete |
 | TRANS-06 | Phase 4 | Pending |
 | TRANS-07 | Phase 1 | Complete |
-| INSTALL-01 | Phase 3 | Pending |
+| INSTALL-01 | Phase 3 | Complete |
 | INSTALL-02 | Phase 1 | Complete |
 | INSTALL-03 | Phase 1 | Complete |
 | INSTALL-04 | Phase 1 | Complete |
 | INSTALL-05 | Phase 4 | Pending |
-| ENHANCE-01 | Phase 3 | Pending |
-| ENHANCE-02 | Phase 3 | Pending |
-| ENHANCE-03 | Phase 3 | Pending |
-| ENHANCE-04 | Phase 3 | Pending |
+| ENHANCE-01 | Phase 3 | Complete |
+| ENHANCE-02 | Phase 3 | Complete |
+| ENHANCE-03 | Phase 3 | Complete |
+| ENHANCE-04 | Phase 3 | Complete |
 | ENHANCE-05 | Phase 6 | Pending |
 | ENHANCE-06 | Phase 6 | Pending |
 | ENHANCE-07 | Phase 6 | Pending |
 | ENHANCE-08 | Phase 6 | Pending |
 | ENHANCE-09 | Phase 6 | Pending |
-| ENHANCE-10 | Phase 3 | Pending |
+| ENHANCE-10 | Phase 3 | Complete |
 | LOG-01 | Phase 6 | Pending |
 | LOG-02 | Phase 6 | Pending |
 | LOG-03 | Phase 6 | Pending |
