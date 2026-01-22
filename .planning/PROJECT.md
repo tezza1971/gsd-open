@@ -1,12 +1,12 @@
-# gsd-open (gsdo)
+# GSD Open
 
 ## What This Is
 
-A Node.js CLI tool (`npx gsd-open`) that transpiles GSD context engineering from Claude Code into open-source and alternative AI platforms. Built for developers who need flexibility beyond Claude Code — either rate-limited and needing a fallback, or wanting to use structured context engineering on free and open-source alternatives.
+A frictionless, zero-input installer that migrates GSD context engineering from Claude Code to OpenCode. Run `npx gsd-open`, it transpiles all `/gsd:*` commands algorithmically, installs a `/gsdo` enhancement command, and exits with clear next steps. The `/gsdo` command then uses OpenCode's LLM to enhance transpiled commands autonomously. Not perfect parity, just best-effort migration that gets users 80% of the way there.
 
 ## Core Value
 
-Frictionless fallback that just works when you hit the wall. Run one command, get set up on OpenCode (and later, other platforms) with your GSD context — no decisions, no friction, honest expectations.
+The `/gsdo` LLM enhancement makes transpiled commands actually usable. Algorithmic transpilation alone produces working but rough commands—the LLM refinement adapts them to OpenCode's patterns, fixes edge cases, and makes them production-ready.
 
 ## Requirements
 
@@ -16,64 +16,76 @@ Frictionless fallback that just works when you hit the wall. Run one command, ge
 
 ### Active
 
-- [ ] Display notice/disclaimer screen at launch
-- [ ] Detect GSD installation at `~/.claude/`, prompt for location if not found
-- [ ] Check GSD freshness and offer to update/install if needed
-- [ ] Detect OpenCode installation on user's system
-- [ ] Transpile GSD context files to OpenCode configuration format
-- [ ] Generate algorithmic shortfall report (which GSD commands aren't portable)
-- [ ] Offer optional LLM enhancement pass with OpenAI-compatible API key
-- [ ] LLM pass: review algorithmic attempt, improve transpilation, interactive loop
-- [ ] If no API key: tip user to run local LLM and exit gracefully
-- [ ] Output final report to console
-- [ ] Offer to save markdown version of report locally
-- [ ] Quiet execution (no prompts during transpilation work)
-- [ ] Professional and straightforward tone throughout
+- [ ] Installer detects GSD at `~/.claude/get-shit-done/` automatically
+- [ ] Installer checks idempotency via timestamps (skip if source unchanged)
+- [ ] Installer caches OpenCode documentation (24hr TTL) in `~/.gsdo/cache/`
+- [ ] Installer installs `/gsdo` command in OpenCode's commands.json
+- [ ] Installer transpiles all `/gsd:*` commands to `/gsd:*` (or `/gsd-*` fallback)
+- [ ] Installer writes timestamped exit log to `~/.gsdo/install.log`
+- [ ] Installer shows ASCII success screen with disclaimer and next steps
+- [ ] `/gsdo` command reads install.log and cached docs for context
+- [ ] `/gsdo` command autonomously enhances all transpiled commands using OpenCode's LLM
+- [ ] `/gsdo` command writes results to `~/.gsdo/gsdo.log` (timestamped, rotated)
+- [ ] Zero user input throughout entire flow (installer + /gsdo)
+- [ ] Partial transpilation success is acceptable (install what works, log what doesn't)
+- [ ] Cross-platform support (Windows, Mac, Linux)
+- [ ] Installation completes in < 10 seconds
 
 ### Out of Scope
 
-- Cursor support — deferred to v2
-- Windsurf support — deferred to v2
-- Antigravity support — deferred to v2
-- ChatLLM support — deferred to v2
-- VS Code support — experimental/research needed, deferred
-- Perfect feature parity — this is "best effort," not a replacement
-- Storing API keys — used in-memory only, then discarded
-- Automated GSD updates without user consent — always ask first
+- **Interactive CLI** — No prompts, no user decisions, fully automated
+- **Perfect parity with Claude Code GSD** — 80% good enough, not 1:1 replication
+- **Backups and rollback** — User can re-run installer to reset if needed
+- **Multiple platform support** — OpenCode only, not Antigravity/Cursor/etc
+- **API key management** — Uses OpenCode's configured LLM, no separate keys
+- **Complex state tracking** — No manifests, just timestamp-based idempotency
+- **Validation and schema checking** — Best effort approach, no strict validation
+- **User skill assessment** — Assumes Claude builds, not user
+- **GSD updates** — User updates GSD via Claude Code, we just transpile
 
 ## Context
 
-**Reference project:** [get-shit-done](https://github.com/glittercowboy/get-shit-done) by glittercowboy — the OG GSD context engineering system for Claude Code. This tool exists to extend GSD's reach to developers who can't always afford Claude Code's rate limits or subscription.
+### Migration Tool Philosophy
 
-**Target users:**
-1. **Rate-limited users** — Has Claude Code, uses GSD, but needs a fallback when hitting usage limits.
-2. **Open-source users** — Prefers free and open-source alternatives. Wants to use structured context engineering without proprietary platforms.
+GSD Open is a **migration tool**, not a project management tool. All state lives in `~/.gsdo/`, never pollutes OpenCode's configuration space with metadata files. We only write the transpiled commands to OpenCode's expected locations.
 
-**GSD location:** Standard install is `~/.claude/`. Tool defaults there, asks user if not found.
+### Two-Pass Architecture
 
-**Two-pass architecture:**
-1. **Algorithmic pass** (always runs) — Quiet transpilation, basic shortfall report
-2. **LLM pass** (optional) — User provides OpenAI-compatible API key, interactive refinement loop, richer final report
+1. **Algorithmic Pass (Installer)**: Deterministic transpilation using pattern matching. Converts command names, extracts templates, maps basic fields. Fast, repeatable, no LLM needed.
 
-**Tone:** Professional, utilitarian, straightforward. The notice disclaimer provides expectation management about "best effort" transpilation.
+2. **Logical Pass (/gsdo Command)**: LLM-based enhancement in OpenCode's context. Adapts prompts, fixes edge cases, improves usability. Uses OpenCode's configured LLM, sees actual usage context.
+
+### Autonomous Operation
+
+Neither the installer nor `/gsdo` command request user input. Smart defaults everywhere. Errors exit with clear messages, don't hang waiting for input. User runs command, sees results, done.
+
+### Log Rotation Strategy
+
+- **install.log**: Timestamped entries, keep past week only
+- **gsdo.log**: Timestamped entries, keep past week only
+- Automatic cleanup on each run
 
 ## Constraints
 
-- **Tech stack**: Node.js, minimal dependencies (fs/promises, path, child_process built-ins), inquirer/prompts for CLI interaction
-- **Distribution**: npx-executable (package.json with `bin` field)
-- **MVP platform**: OpenCode only — other platforms are future scope
-- **No secrets stored**: API keys used in-memory, never persisted
-- **Respect for GSD**: Disclaimer acknowledges original author, sets expectations about "best effort" nature
+- **Runtime**: Node.js 20+ required
+- **Dependencies**: Zero external dependencies for installer (built-in modules only)
+- **GSD Location**: Must be at `~/.claude/get-shit-done/` (no custom locations)
+- **OpenCode Detection**: Auto-detects config at `.opencode/`, `~/.config/opencode/`, or `%APPDATA%/opencode/`
+- **Performance**: Must complete installation in < 10 seconds
+- **Platform**: Must work on Windows, Mac, Linux without platform-specific code
+- **Naming**: Preserve `/gsd:` namespace prefix (or `/gsd-` fallback if filesystem limitations)
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| OpenCode as sole MVP target | Focus beats sprawl. Nail one platform before expanding. | — Pending |
-| Two-pass (algorithmic + LLM) | Algorithmic gives baseline for free, LLM enhances for those who have API access | — Pending |
-| Notice disclaimer stays | Expectation management + courtesy to OG GSD author | — Pending |
-| API keys in-memory only | Privacy/security for users, no persistence of secrets | — Pending |
-| Local LLM tip as fallback | Users without API keys can still get enhanced reports using local LLMs | — Pending |
+| Use timestamps for idempotency (not version parsing) | Simpler, more reliable, works even if GSD has no version file | — Pending |
+| Prefer `/gsd:*` naming, fallback to `/gsd-*` | Namespace preservation, but adapt to platform filesystem limits | — Pending |
+| Install partial success (10/15 commands) | Better to have working subset than all-or-nothing failure | — Pending |
+| /gsdo enhances everything every run | Autonomous, idempotent, user doesn't manage individual commands | — Pending |
+| Separate logs (install.log vs gsdo.log) | Clear separation of concerns, easier troubleshooting | — Pending |
+| 7-day log rotation | Balances history preservation with disk space | — Pending |
+| No backups or rollback | Re-running installer is the recovery mechanism | — Pending |
 
 ---
-*Last updated: 2025-01-21 after initialization*
+*Last updated: 2026-01-22 after initialization*
