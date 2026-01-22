@@ -47,6 +47,16 @@ export function convertCommand(gsd: GsdCommand): TranspileResult {
       warnings.push('No description found in markdown, using generated default');
     }
 
+    // Add warning if extracted template is empty
+    if (!promptTemplate || promptTemplate.trim().length === 0) {
+      warnings.push('Extracted template is empty - command may not work');
+    }
+
+    // Add warning if variables exist but description doesn't mention them
+    if (variables.length > 0 && !description.toLowerCase().includes('parameter')) {
+      warnings.push(`Template uses ${variables.length} variable(s) but description doesn't mention parameters`);
+    }
+
     const command: OpenCodeCommand = {
       name,
       description,
