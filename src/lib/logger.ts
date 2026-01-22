@@ -43,5 +43,3 @@ export const log = {
     }
   }
 };
-
-export { LogLevel };
