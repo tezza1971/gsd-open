@@ -6,10 +6,11 @@
  * Main entry point that orchestrates the full installer flow:
  * 1. Detect GSD installation
  * 2. Detect/create OpenCode config directory
- * 3. Scan GSD commands from skills/
- * 4. Transpile commands to OpenCode format
- * 5. Merge with existing commands
- * 6. Write updated commands.json
+ * 3. Cache OpenCode documentation
+ * 4. Scan GSD commands from skills/
+ * 5. Transpile commands to OpenCode format
+ * 6. Merge with existing commands
+ * 7. Write updated commands.json
  */
 
 import { detectGsd, detectOpenCode } from './lib/detector.js';
@@ -20,6 +21,7 @@ import {
   mergeCommands,
   writeCommands,
 } from './lib/installer/commands-manager.js';
+import { ensureOpenCodeDocsCache } from './lib/cache/manager.js';
 
 async function main() {
   console.log('→ Detecting GSD installation...');
@@ -45,6 +47,21 @@ async function main() {
     opencodeResult.created ? 'Created at' : 'Found at',
     opencodeResult.path
   );
+
+  // Cache OpenCode documentation for future /gsdo use
+  console.log('→ Caching OpenCode documentation...');
+  const cacheResult = await ensureOpenCodeDocsCache();
+
+  if (cacheResult.cached) {
+    if (cacheResult.stale) {
+      console.log('  ⚠ Using stale cache (download failed)');
+    } else {
+      console.log('  ✓ Documentation cached');
+    }
+  } else {
+    console.log('  ⚠ Cache unavailable:', cacheResult.error);
+    console.log('  → Continuing without cached docs');
+  }
 
   console.log('→ Scanning for /gsd:* commands...');
   const gsdCommands = scanGsdCommands(gsdResult.path!);
