@@ -46,6 +46,18 @@ we can all benefit.
 | 5    | **ChatLLM**     | v2 Planned   | The ultimate fallback.                               |
 | ?    | **VS Code**     | Researching  | Can it handle slash commands? We're looking into it. |
 
+## Documentation
+
+Full documentation is available in the [`docs/`](./docs/) folder:
+
+| Guide | Description |
+|-------|-------------|
+| [API Keys](./docs/api-keys.md) | Environment variables for LLM enhancement |
+| [CLI Reference](./docs/cli-reference.md) | All commands, flags, and exit codes |
+| [LLM Enhancement](./docs/llm-enhancement.md) | Optional AI-powered refinement |
+| [Transpilation](./docs/transpilation.md) | How GSD becomes OpenCode |
+| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions |
+
 ## Usage
 
 Run via npx:
@@ -57,11 +69,24 @@ npx gsd-for-hobos
 ### Options
 
 ```
---help       Show usage information
---version    Show current version
---dry-run    Preview changes without writing anything
---quiet      Suppress output (except errors)
--v           Verbose mode for debugging
+--help         Show usage information
+--version      Show current version
+--dry-run      Preview changes without writing anything
+--quiet        Suppress output (except errors)
+-v, --verbose  Verbose mode for debugging
+--detect       Run detection only (skip transpilation)
+--no-enhance   Skip LLM enhancement prompt
+```
+
+### Transpile Subcommand
+
+```bash
+gfh transpile [options]
+
+Options:
+  --force       Force re-transpilation even if unchanged
+  --no-backup   Skip backup (dangerous)
+  --no-enhance  Skip LLM enhancement prompt
 ```
 
 ### Exit Codes
@@ -71,6 +96,21 @@ npx gsd-for-hobos
 | 0    | Success — transpilation complete     |
 | 1    | Warnings — partial success           |
 | 2+   | Errors — something went wrong        |
+
+## LLM Enhancement
+
+After transpilation, gfh can optionally enhance results using an LLM. Set one of these environment variables:
+
+| Provider | Environment Variable |
+|----------|---------------------|
+| OpenAI | `OPENAI_API_KEY` |
+| Anthropic | `ANTHROPIC_API_KEY` |
+| OpenRouter | `OPENROUTER_API_KEY` |
+| Azure OpenAI | `AZURE_OPENAI_API_KEY` + `AZURE_OPENAI_ENDPOINT` |
+
+See [API Keys Guide](./docs/api-keys.md) for complete setup instructions.
+
+No API key? gfh will suggest local LLM alternatives (Ollama, LM Studio, llama.cpp).
 
 ## Architecture
 
@@ -96,8 +136,9 @@ npx gsd-for-hobos
 This project is under active development. See `.planning/ROADMAP.md` for the
 current status and phase breakdown.
 
-**Current phase:** Not started
+**Current phase:** Phase 5 - LLM Enhancement (final phase)
 **Requirements:** 28 total across 5 phases
+**Progress:** Phases 1-4 complete, Phase 5 in verification
 
 ## License
 
