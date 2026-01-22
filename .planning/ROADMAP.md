@@ -79,10 +79,12 @@ Plans:
   1. User sees console report showing which GSD commands were/weren't portable
   2. User sees shortfall analysis with specific feature gaps listed
   3. User can save markdown version of report to local file
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md — Enhance gap tracking with source files, categories, suggestions
+- [ ] 04-02-PLAN.md — Build console reporter with sections, shortfalls, summary
+- [ ] 04-03-PLAN.md — Add markdown export and integrate into transpile command
 
 ### Phase 5: LLM Enhancement
 **Goal**: Users with API access can improve transpilation quality through LLM refinement
@@ -109,7 +111,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Foundation | 2/2 | Complete | 2026-01-21 |
 | 2. Detection | 4/4 | Complete | 2026-01-22 |
 | 3. Transpilation | 3/3 | Complete | 2026-01-22 |
-| 4. Reports | 0/TBD | Not started | - |
+| 4. Reports | 0/3 | Not started | - |
 | 5. LLM Enhancement | 0/TBD | Not started | - |
 
 ---
