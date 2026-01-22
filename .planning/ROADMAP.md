@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - CLI skeleton with Hobo Manifesto and standard flags
 - [x] **Phase 2: Detection** - Find GSD and OpenCode installations, validate completeness
-- [ ] **Phase 3: Transpilation** - Parse GSD, transform to OpenCode, handle conflicts
+- [x] **Phase 3: Transpilation** - Parse GSD, transform to OpenCode, handle conflicts
 - [ ] **Phase 4: Reports** - Console output with shortfall analysis, markdown export
 - [ ] **Phase 5: LLM Enhancement** - Optional API-powered refinement loop
 
@@ -61,15 +61,15 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User's GSD files are parsed into intermediate representation without data loss
   2. User's OpenCode config directory contains transformed configuration files
-  3. User with existing OpenCode configs gets prompted before any overwrite
-  4. User's existing configs are backed up before any overwrite
+  3. User sees backup location announcement when existing configs are overwritten
+  4. User's existing configs are backed up automatically before any overwrite
   5. Running transpilation twice produces identical results (idempotent)
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — GSD parser with IR and comprehensive error handling
-- [ ] 03-02-PLAN.md — Config-driven transformer with gap tracking and user overrides
-- [ ] 03-03-PLAN.md — Backup manager, idempotency, and CLI integration
+- [x] 03-01-PLAN.md — GSD parser with IR and comprehensive error handling
+- [x] 03-02-PLAN.md — Config-driven transformer with gap tracking and user overrides
+- [x] 03-03-PLAN.md — Backup manager, idempotency, and CLI integration
 
 ### Phase 4: Reports
 **Goal**: User understands what transpiled successfully and what fell short
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-01-21 |
 | 2. Detection | 4/4 | Complete | 2026-01-22 |
-| 3. Transpilation | 0/3 | Not started | - |
+| 3. Transpilation | 3/3 | Complete | 2026-01-22 |
 | 4. Reports | 0/TBD | Not started | - |
 | 5. LLM Enhancement | 0/TBD | Not started | - |
 
