@@ -17,6 +17,7 @@ import type { CLIOptions, TranspileOptions, TranspileResult } from '../types/ind
 import { detectGSD } from '../lib/detection/gsd-detector.js';
 import { runTranspilation } from '../lib/transpilation/orchestrator.js';
 import { generateReport } from '../lib/transpilation/reporter.js';
+import { generateMarkdown } from '../lib/transpilation/markdown-generator.js';
 import { ExitCode } from '../lib/exit-codes.js';
 import { log } from '../lib/logger.js';
 
@@ -123,5 +124,26 @@ export async function transpileCommand(options: TranspileCommandOptions): Promis
     process.exitCode = ExitCode.WARNING;
   } else {
     process.exitCode = ExitCode.SUCCESS;
+  }
+
+  // Step 4: Offer markdown export (only on success, not in quiet/dry-run mode)
+  if (result.success && !options.quiet && !options.dryRun) {
+    const saveMarkdown = await confirm({
+      message: 'Save report to markdown?',
+      initialValue: true,
+    });
+
+    if (isCancel(saveMarkdown)) {
+      log.info('Markdown export cancelled.');
+    } else if (saveMarkdown) {
+      try {
+        const markdown = generateMarkdown(result);
+        const filePath = join(process.cwd(), 'transpilation-report.md');
+        await writeFile(filePath, markdown, 'utf-8');
+        log.success(`Report saved to ${filePath}`);
+      } catch (error) {
+        log.error(`Failed to save report: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
   }
 }
