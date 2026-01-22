@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "description": "Default GSD to OpenCode transformation rules. Override by creating ~/.gfh/transforms.json with same structure.",
+  "agents": {
+    "fieldMappings": {
+      "name": "name",
+      "description": "description",
+      "model": "model",
+      "temperature": "temperature",
+      "systemPrompt": "systemMessage",
+      "maxTokens": "maxTokens"
+    },
+    "defaults": {
+      "temperature": 0.7
+    },
+    "approximations": {
+      "tools": "Mapped to OpenCode tools array if available",
+      "config": "Merged into OpenCode agent config if present"
+    }
+  },
+  "commands": {
+    "fieldMappings": {
+      "name": "name",
+      "description": "description",
+      "template": "promptTemplate"
+    },
+    "defaults": {},
+    "approximations": {
+      "variables": "Inlined into promptTemplate as template literals",
+      "agent": "Stored in OpenCode command config if present"
+    }
+  },
+  "models": {
+    "fieldMappings": {
+      "name": "modelId",
+      "provider": "provider",
+      "endpoint": "endpoint"
+    },
+    "defaults": {},
+    "approximations": {
+      "config": "Merged into OpenCode model config if present"
+    }
+  },
+  "config": {
+    "fieldMappings": {
+      "theme": "theme",
+      "keybindings": "keybindings"
+    },
+    "defaults": {},
+    "approximations": {
+      "permissions": "Not supported by OpenCode - logged as gap",
+      "custom": "Merged into OpenCode settings if present"
+    }
+  }
+}
