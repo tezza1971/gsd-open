@@ -15,6 +15,7 @@ program
   .option('-q, --quiet', 'suppress all output except errors')
   .option('--dry-run', 'preview changes without writing files')
   .option('--detect', 'run detection only (skip transpilation)')
+  .option('--no-enhance', 'skip LLM enhancement phase')
   .action(async (options) => {
     try {
       setLogLevel(options.verbose, options.quiet);
@@ -47,6 +48,7 @@ program
         verbose: options.verbose ?? false,
         quiet: options.quiet ?? false,
         dryRun: options.dryRun ?? false,
+        noEnhance: options.noEnhance ?? false,
       });
     } catch (error: unknown) {
       log.error(error instanceof Error ? error.message : String(error));
@@ -60,6 +62,7 @@ program
   .description('Transpile GSD context to OpenCode configuration')
   .option('--force', 'Force re-transpilation even if source unchanged')
   .option('--no-backup', 'Skip backup of existing configs (dangerous)')
+  .option('--no-enhance', 'Skip LLM enhancement phase')
   .action(async (cmdOptions) => {
     try {
       // Get global options from parent
@@ -79,6 +82,7 @@ program
         dryRun: globalOptions.dryRun ?? false,
         force: cmdOptions.force ?? false,
         noBackup: cmdOptions.noBackup ?? false,
+        noEnhance: cmdOptions.noEnhance ?? false,
       });
     } catch (error: unknown) {
       log.error(error instanceof Error ? error.message : String(error));

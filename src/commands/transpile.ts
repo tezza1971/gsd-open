@@ -20,6 +20,9 @@ import { generateReport } from '../lib/transpilation/reporter.js';
 import { generateMarkdown } from '../lib/transpilation/markdown-generator.js';
 import { ExitCode } from '../lib/exit-codes.js';
 import { log } from '../lib/logger.js';
+import { detectAndConfirmAPIConfig } from '../lib/llm/api-config.js';
+import { LLMEnhancer } from '../lib/llm/llm-enhancer.js';
+import { DocsCacheManager } from '../lib/llm/cache-manager.js';
 
 /**
  * Extended options for transpile command.
@@ -29,6 +32,8 @@ export interface TranspileCommandOptions extends CLIOptions {
   force?: boolean;
   /** Skip backup of existing configs */
   noBackup?: boolean;
+  /** Skip LLM enhancement phase */
+  noEnhance?: boolean;
 }
 
 /**
@@ -124,6 +129,74 @@ export async function transpileCommand(options: TranspileCommandOptions): Promis
     process.exitCode = ExitCode.WARNING;
   } else {
     process.exitCode = ExitCode.SUCCESS;
+  }
+
+  // Step 3.5: LLM Enhancement Pass (optional)
+  if (!options.noEnhance && result.success && !options.dryRun && !options.quiet) {
+    try {
+      const enhanceOffer = await confirm({
+        message: 'Enhance transpilation with LLM? (requires API key)',
+        initialValue: false,
+      });
+
+      if (!isCancel(enhanceOffer) && enhanceOffer) {
+        // Detect and confirm API configuration
+        const apiConfig = await detectAndConfirmAPIConfig();
+
+        if (apiConfig === null) {
+          // No API key configured - show fallback message
+          log.info('');
+          log.info(pc.yellow('No API key configured. You can still get enhanced reports by running a local LLM:'));
+          log.info('');
+          log.info(pc.dim('  • Ollama: https://ollama.ai/docs/getting-started'));
+          log.info(pc.dim('  • LM Studio: https://lmstudio.ai/'));
+          log.info(pc.dim('  • llama.cpp: https://github.com/ggerganov/llama.cpp'));
+          log.info('');
+          log.info(pc.dim('Or use --no-enhance to skip this prompt next time.'));
+          log.info('');
+        } else {
+          // API key validated - run enhancement
+          const cacheManager = new DocsCacheManager();
+          const enhancer = new LLMEnhancer(apiConfig, cacheManager);
+
+          // Determine OpenCode config directory (same logic as orchestrator)
+          const opencodeConfigDir = transpileOptions.opencodeConfigDir ?? join(process.cwd(), '.opencode');
+
+          const enhancementResult = await enhancer.enhanceTranspilationResult(result, opencodeConfigDir);
+
+          if (enhancementResult.success && enhancementResult.appliedRules > 0) {
+            log.success(`Enhancement complete! Applied ${enhancementResult.appliedRules} new rule(s)`);
+            log.info('');
+
+            // Offer to regenerate report with new rules
+            const regenerate = await confirm({
+              message: 'Regenerate transpilation with LLM-enhanced rules?',
+              initialValue: false,
+            });
+
+            if (!isCancel(regenerate) && regenerate) {
+              log.info('Note: Re-transpilation with LLM rules is a future enhancement.');
+              log.info('For now, LLM rules are saved to llm-rules.json for manual review.');
+            }
+          }
+
+          if (enhancementResult.errors.length > 0) {
+            log.warn('Enhancement encountered errors:');
+            enhancementResult.errors.forEach(error => {
+              log.warn(`  - ${error}`);
+            });
+            log.info('');
+          }
+        }
+      }
+    } catch (error) {
+      // Never let LLM enhancement failure block transpilation
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      log.warn(`LLM enhancement failed: ${errorMsg}. Continuing with algorithmic result.`);
+      if (error instanceof Error && error.stack) {
+        log.verbose(error.stack);
+      }
+    }
   }
 
   // Step 4: Offer markdown export (only on success, not in quiet/dry-run mode)
