@@ -1,9 +1,10 @@
 /**
  * Type definitions for GSD-to-OpenCode transpilation engine
  *
- * Phase 1: Basic algorithmic conversion (no LLM)
+ * Phase 4: Enhanced transpilation with template variable parsing
  * - Name transformation: /gsd:* -> gsd-*
  * - Field mapping to OpenCode command schema
+ * - Template variable extraction
  */
 
 /**
@@ -24,7 +25,7 @@ export interface GsdCommand {
 }
 
 /**
- * OpenCode command schema (Phase 1: basic fields only)
+ * OpenCode command schema (Phase 4: includes variables)
  */
 export interface OpenCodeCommand {
   /** Converted name, e.g., "gsd-plan-phase" (no slash, colon->dash) */
@@ -33,8 +34,11 @@ export interface OpenCodeCommand {
   /** From GSD or default description */
   description: string;
 
-  /** Entire markdown content for now (Phase 1) */
+  /** Extracted prompt template (Phase 4) */
   promptTemplate: string;
+
+  /** Template variables parsed from promptTemplate (Phase 4) */
+  variables?: string[];
 }
 
 /**
