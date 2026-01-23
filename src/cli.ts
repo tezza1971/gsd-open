@@ -8,17 +8,18 @@
  * 2. Detect/create OpenCode config directory
  * 3. Check for file changes (idempotency)
  * 4. Cache OpenCode documentation
- * 5. Scan GSD commands from skills/
- * 6. Transpile commands to OpenCode format
- * 7. Write commands as individual .md files
- * 8. Update import state
+ * 5. Write documentation URLs for /gsdo
+ * 6. Scan GSD commands from skills/
+ * 7. Transpile commands to OpenCode format
+ * 8. Write commands as individual .md files
+ * 9. Update import state
  */
 
 import { detectGsd, detectOpenCode } from './lib/detector.js';
 import { scanGsdCommands } from './lib/transpiler/scanner.js';
 import { convertCommand } from './lib/transpiler/converter.js';
 import { writeCommandFiles } from './lib/installer/commands-manager.js';
-import { ensureOpenCodeDocsCache } from './lib/cache/manager.js';
+import { ensureOpenCodeDocsCache, writeDocsUrls } from './lib/cache/manager.js';
 import { readImportState, writeImportState, buildCurrentState } from './lib/idempotency/state-manager.js';
 import { checkFreshness } from './lib/idempotency/freshness-checker.js';
 import { getDocsOpenCodeCachePath } from './lib/cache/paths.js';
@@ -123,6 +124,17 @@ async function main() {
     });
     progress.log(`WARNING: ${formatted.message}`, 'warning');
     progress.log(formatted.resolution, 'info');
+  }
+  progress.endStep();
+
+  // Write documentation URLs for /gsdo to reference
+  progress.startStep('Writing documentation URLs');
+  try {
+    await writeDocsUrls();
+    progress.log('Documentation URLs written', 'success');
+  } catch (error) {
+    progress.log('Failed to write documentation URLs', 'warning');
+    console.warn(`Error: ${error instanceof Error ? error.message : String(error)}`);
   }
   progress.endStep();
 

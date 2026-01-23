@@ -1,7 +1,7 @@
-import { existsSync } from 'fs';
-import { readFile } from 'fs/promises';
+import { existsSync, mkdirSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { getDocsOpenCodeCachePath } from './paths.js';
+import { getDocsOpenCodeCachePath, getGsdoCachePath, getDocsUrlsPath } from './paths.js';
 import { downloadOpenCodeDocs } from './downloader.js';
 import type { CacheMetadata } from './types.js';
 
@@ -126,4 +126,41 @@ async function attemptDownload(cacheExists: boolean): Promise<CacheResult> {
     stale: false,
     error: downloadResult.error
   };
+}
+
+/**
+ * Writes documentation URLs file for /gsdo to reference.
+ * Contains URLs for Claude Code and OpenCode documentation needed for intelligent command mapping.
+ *
+ * @throws Error if write fails
+ */
+export async function writeDocsUrls(): Promise<void> {
+  const cacheDir = getGsdoCachePath();
+  const docsUrlsPath = getDocsUrlsPath();
+
+  // Ensure cache directory exists
+  if (!existsSync(cacheDir)) {
+    mkdirSync(cacheDir, { recursive: true });
+  }
+
+  const docsUrls = {
+    claudeCode: [
+      'https://code.claude.com/docs/en/plugins',
+      'https://code.claude.com/docs/en/skills'
+    ],
+    opencode: [
+      'https://opencode.ai/docs/tools/',
+      'https://opencode.ai/docs/commands/',
+      'https://opencode.ai/docs/plugins/',
+      'https://opencode.ai/docs/ecosystem/'
+    ]
+  };
+
+  try {
+    await writeFile(docsUrlsPath, JSON.stringify(docsUrls, null, 2), 'utf-8');
+  } catch (error) {
+    throw new Error(
+      `Failed to write docs URLs file: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
 }
