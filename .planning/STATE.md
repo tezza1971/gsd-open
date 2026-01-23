@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-22)
 
 **Core value:** The /gsdo LLM enhancement makes transpiled commands actually usable
-**Current focus:** Phase 5 - Idempotency (COMPLETE)
+**Current focus:** Phase 6 - Exit Logging (IN PROGRESS)
 
 ## Current Position
 
-Phase: 5 of 7 (Idempotency)
-Plan: 2 of 2 in current phase (PHASE COMPLETE)
-Status: Phase 5 complete - ready for Phase 6
-Last activity: 2026-01-23 - Completed Phase 5 (Idempotency)
+Phase: 6 of 7 (Exit Logging)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-23 - Completed 06-01-PLAN.md (Install Logger)
 
-Progress: [████████░░] ~71%
+Progress: [████████░░] ~73%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 3.5 min
-- Total execution time: 0.75 hours
+- Total plans completed: 14
+- Average duration: 3.6 min
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [████████░░] ~71%
 | 03-gsdo-command | 3/3 | 13min | 4.3min |
 | 04-enhanced-transpilation | 3/3 | 8min | 2.7min |
 | 05-idempotency | 2/2 | 12min | 6min |
+| 06-exit-logging | 1/3 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (4min), 04-02 (2.6min), 04-03 (2min), 05-01 (6min), 05-02 (6min)
+- Last 5 plans: 04-02 (2.6min), 04-03 (2min), 05-01 (6min), 05-02 (6min), 06-01 (4min)
 - Trend: Maintaining strong velocity
 
 *Updated after each plan completion*
@@ -101,6 +102,11 @@ Recent decisions affecting current work:
 - **[05-02]** Force flag bypasses all freshness checks for complete refresh
 - **[05-02]** Exit code 0 for skip (success, not error)
 - **[04-03]** Add warnings for empty templates and undocumented variables
+- **[06-01]** Markdown/JSON hybrid format for install.log (human-readable with machine-parseable JSON blocks)
+- **[06-01]** Error codes for categorizing failures: E001 (template extraction), E002 (invalid markdown), W001 (missing description), W002 (empty template), W003 (undocumented variables)
+- **[06-01]** Non-blocking logging: write failures don't crash installer
+- **[06-01]** Append-only entries: preserve historical install record
+- **[06-01]** Log location: ~/.gsdo/install.log (separate from cache at ~/.gsdo/cache/)
 
 ### Pending Todos
 
@@ -112,8 +118,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-23T10:50:27Z
-Stopped at: Completed 05-02-PLAN.md (CLI Idempotency Integration)
+Last session: 2026-01-23T08:57:00Z
+Stopped at: Completed 06-01-PLAN.md (Install Logger)
 Resume file: None
 
 **Phase 1 Status:**
@@ -143,3 +149,8 @@ Resume file: None
 - ✓ State file infrastructure (05-01)
 - ✓ Freshness checking & CLI integration (05-02)
 - Phase 5 COMPLETE - all tests passing
+
+**Phase 6 Status:**
+- ✓ Install logger infrastructure (06-01)
+- → Enhanced logging with /gsdo (06-02) - next
+- → Log rotation (06-03) - planned
