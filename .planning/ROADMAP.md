@@ -114,12 +114,12 @@ Plans:
   4. /gsdo fixes naming issues, improves prompt templates, adds missing parameters, and fixes broken references
   5. /gsdo updates `commands.json` in place with enhanced commands
   6. Both logs rotate automatically (keep only past 7 days)
-**Plans**: 3 plans
+**Plans**: 3 plans complete
 
 Plans:
-- [ ] 06-01-PLAN.md — Installer logging infrastructure with markdown/JSON hybrid format
-- [ ] 06-02-PLAN.md — Enhancement logging and validation improvements
-- [ ] 06-03-PLAN.md — Log rotation with daily rotation and 7-day retention
+- [x] 06-01: Installer logging infrastructure with markdown/JSON hybrid format
+- [x] 06-02: Enhancement logging and validation improvements
+- [x] 06-03: Log rotation with daily rotation and 7-day retention
 
 ### Phase 7: Polish
 **Goal**: Installer provides excellent UX with clear messaging and fast performance
@@ -150,5 +150,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. /gsdo Command | 3/3 | ✓ Complete | 2026-01-22 |
 | 4. Enhanced Transpilation | 3/3 | ✓ Complete | 2026-01-23 |
 | 5. Idempotency | 2/2 | ✓ Complete | 2026-01-23 |
-| 6. Exit Logging | 0/3 | Not started | - |
+| 6. Exit Logging | 3/3 | ✓ Complete | 2026-01-23 |
 | 7. Polish | 0/2 | Not started | - |

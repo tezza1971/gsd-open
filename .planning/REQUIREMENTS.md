@@ -50,21 +50,21 @@
 - [x] **ENHANCE-02**: `/gsdo` command reads cached OpenCode docs from `~/.gsdo/cache/`
 - [x] **ENHANCE-03**: `/gsdo` command lists all `/gsd-*` commands from OpenCode's `commands.json`
 - [x] **ENHANCE-04**: `/gsdo` command uses OpenCode's configured LLM to analyze and enhance commands
-- [ ] **ENHANCE-05**: `/gsdo` command fixes naming issues in transpiled commands
-- [ ] **ENHANCE-06**: `/gsdo` command improves prompt templates for OpenCode patterns
-- [ ] **ENHANCE-07**: `/gsdo` command adds missing parameters to commands
-- [ ] **ENHANCE-08**: `/gsdo` command fixes broken agent/tool references
-- [ ] **ENHANCE-09**: `/gsdo` command updates `commands.json` in place
+- [x] **ENHANCE-05**: `/gsdo` command fixes naming issues in transpiled commands
+- [x] **ENHANCE-06**: `/gsdo` command improves prompt templates for OpenCode patterns
+- [x] **ENHANCE-07**: `/gsdo` command adds missing parameters to commands
+- [x] **ENHANCE-08**: `/gsdo` command fixes broken agent/tool references
+- [x] **ENHANCE-09**: `/gsdo` command updates `commands.json` in place
 - [x] **ENHANCE-10**: `/gsdo` command operates autonomously without user input
 
 ### Logging
 
-- [ ] **LOG-01**: Installer writes timestamped entries to `~/.gsdo/install.log`
-- [ ] **LOG-02**: Installer logs include transpilation results (success/warnings/errors per command)
-- [ ] **LOG-03**: `/gsdo` command writes timestamped entries to `~/.gsdo/gsdo.log`
-- [ ] **LOG-04**: `/gsdo` command logs include enhancement results per command
-- [ ] **LOG-05**: Both logs rotate automatically (keep only past 7 days)
-- [ ] **LOG-06**: Logs use markdown format for human and LLM readability
+- [x] **LOG-01**: Installer writes timestamped entries to `~/.gsdo/install.log`
+- [x] **LOG-02**: Installer logs include transpilation results (success/warnings/errors per command)
+- [x] **LOG-03**: `/gsdo` command writes timestamped entries to `~/.gsdo/gsdo.log`
+- [x] **LOG-04**: `/gsdo` command logs include enhancement results per command
+- [x] **LOG-05**: Both logs rotate automatically (keep only past 7 days)
+- [x] **LOG-06**: Logs use markdown format for human and LLM readability
 
 ### User Experience
 
@@ -119,10 +119,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DETECT-02 | Phase 1 | Complete |
 | DETECT-03 | Phase 1 | Complete |
 | DETECT-04 | Phase 1 | Complete |
-| IDEM-01 | Phase 5 | Pending |
-| IDEM-02 | Phase 5 | Pending |
-| IDEM-03 | Phase 5 | Pending |
-| IDEM-04 | Phase 5 | Pending |
+| IDEM-01 | Phase 5 | Complete |
+| IDEM-02 | Phase 5 | Complete |
+| IDEM-03 | Phase 5 | Complete |
+| IDEM-04 | Phase 5 | Complete |
 | CACHE-01 | Phase 2 | Complete |
 | CACHE-02 | Phase 2 | Complete |
 | CACHE-03 | Phase 2 | Complete |
@@ -143,18 +143,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENHANCE-02 | Phase 3 | Complete |
 | ENHANCE-03 | Phase 3 | Complete |
 | ENHANCE-04 | Phase 3 | Complete |
-| ENHANCE-05 | Phase 6 | Pending |
-| ENHANCE-06 | Phase 6 | Pending |
-| ENHANCE-07 | Phase 6 | Pending |
-| ENHANCE-08 | Phase 6 | Pending |
-| ENHANCE-09 | Phase 6 | Pending |
+| ENHANCE-05 | Phase 6 | Complete |
+| ENHANCE-06 | Phase 6 | Complete |
+| ENHANCE-07 | Phase 6 | Complete |
+| ENHANCE-08 | Phase 6 | Complete |
+| ENHANCE-09 | Phase 6 | Complete |
 | ENHANCE-10 | Phase 3 | Complete |
-| LOG-01 | Phase 6 | Pending |
-| LOG-02 | Phase 6 | Pending |
-| LOG-03 | Phase 6 | Pending |
-| LOG-04 | Phase 6 | Pending |
-| LOG-05 | Phase 6 | Pending |
-| LOG-06 | Phase 6 | Pending |
+| LOG-01 | Phase 6 | Complete |
+| LOG-02 | Phase 6 | Complete |
+| LOG-03 | Phase 6 | Complete |
+| LOG-04 | Phase 6 | Complete |
+| LOG-05 | Phase 6 | Complete |
+| LOG-06 | Phase 6 | Complete |
 | UX-01 | Phase 7 | Pending |
 | UX-02 | Phase 7 | Pending |
 | UX-03 | Phase 7 | Pending |
@@ -163,8 +163,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-06 | Phase 7 | Pending |
 | UX-07 | Phase 7 | Pending |
 | PERF-01 | Phase 7 | Pending |
-| PERF-02 | Phase 5 | Pending |
-| PERF-03 | Phase 5 | Pending |
+| PERF-02 | Phase 5 | Complete |
+| PERF-03 | Phase 5 | Complete |
 | PLATFORM-01 | Phase 1 | Complete |
 | PLATFORM-02 | Phase 1 | Complete |
 | PLATFORM-03 | Phase 1 | Complete |
