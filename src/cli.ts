@@ -42,15 +42,26 @@ import { getDocsOpenCodeCachePath } from './lib/cache/paths.js';
 import { writeInstallLog } from './lib/logger/install-logger.js';
 import { rotateLogsIfNeeded } from './lib/logger/log-rotator.js';
 import { LogEntry, LogLevel, CommandResult } from './lib/logger/types.js';
+import { ProgressReporter } from './lib/ui/progress-reporter.js';
+import { renderSuccessScreen } from './lib/ui/success-screen.js';
+import { VerbosityLevel, type SuccessScreenData } from './lib/ui/types.js';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 async function main() {
-  // Parse --force flag
+  // Parse CLI flags
   const forceRefresh = process.argv.includes('--force');
+  const quiet = process.argv.includes('--quiet');
+  const verbose = process.argv.includes('--verbose') || process.argv.includes('-v');
 
-  console.log('→ Detecting GSD installation...');
+  const verbosity = quiet ? VerbosityLevel.QUIET :
+                    verbose ? VerbosityLevel.VERBOSE :
+                    VerbosityLevel.NORMAL;
+
+  const progress = new ProgressReporter(verbosity);
+
+  progress.startStep('Detecting GSD installation');
   const gsdResult = detectGsd();
 
   if (!gsdResult.found) {
@@ -58,9 +69,10 @@ async function main() {
     process.exit(1);
   }
 
-  console.log('  ✓ Found at', gsdResult.path);
+  progress.log(`Found at ${gsdResult.path}`, 'success');
+  progress.endStep();
 
-  console.log('→ Detecting OpenCode installation...');
+  progress.startStep('Detecting OpenCode installation');
   const opencodeResult = detectOpenCode();
 
   if (!opencodeResult.found) {
@@ -68,67 +80,76 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(
-    '  ✓',
-    opencodeResult.created ? 'Created at' : 'Found at',
-    opencodeResult.path
+  progress.log(
+    `${opencodeResult.created ? 'Created at' : 'Found at'} ${opencodeResult.path}`,
+    'success'
   );
+  progress.endStep();
 
   // Check if re-transpilation needed
-  console.log('→ Checking for changes...');
+  progress.startStep('Checking for changes');
 
   const previousState = readImportState();
   const currentState = buildCurrentState(gsdResult.path!);
   const freshness = checkFreshness(previousState, currentState);
 
   if (!forceRefresh && freshness.fresh) {
-    console.log('  ✓ GSD files unchanged since last import');
-    console.log('  ✓ Already up to date');
-    console.log('');
-    console.log('Tip: Run with --force to re-transpile anyway');
+    progress.log('GSD files unchanged since last import', 'success');
+    progress.log('Already up to date', 'success');
+    progress.endStep();
+
+    if (verbosity !== VerbosityLevel.QUIET) {
+      console.log('');
+      console.log('Tip: Run with --force to re-transpile anyway');
+    }
 
     // Still check docs cache freshness independently
     const cacheResult = await ensureOpenCodeDocsCache();
     if (cacheResult.cached && !cacheResult.stale) {
-      console.log('  ✓ Documentation cache fresh');
+      progress.log('Documentation cache fresh', 'success');
     } else if (cacheResult.stale) {
-      console.log('  ⚠ Documentation cache refreshed');
+      progress.log('Documentation cache refreshed', 'warning');
     }
 
     process.exit(0); // Success - nothing to do
   }
 
   if (forceRefresh) {
-    console.log('  → Forcing re-transpilation (--force flag)');
+    progress.log('Forcing re-transpilation (--force flag)', 'info');
   } else {
-    console.log(`  → Changes detected: ${freshness.reason}`);
+    progress.log(`Changes detected: ${freshness.reason}`, 'info');
   }
+  progress.endStep();
 
   // Cache OpenCode documentation for future /gsdo use
-  console.log('→ Caching OpenCode documentation...');
+  progress.startStep('Caching OpenCode documentation');
   const cacheResult = await ensureOpenCodeDocsCache();
 
   if (cacheResult.cached) {
     if (cacheResult.stale) {
-      console.log('  ⚠ Using stale cache (download failed)');
+      progress.log('Using stale cache (download failed)', 'warning');
     } else {
-      console.log('  ✓ Documentation cached');
+      progress.log('Documentation cached', 'success');
     }
   } else {
-    console.log('  ⚠ Cache unavailable:', cacheResult.error);
-    console.log('  → Continuing without cached docs');
+    progress.log(`Cache unavailable: ${cacheResult.error}`, 'warning');
+    progress.log('Continuing without cached docs', 'info');
   }
+  progress.endStep();
 
-  console.log('→ Scanning for /gsd:* commands...');
+  progress.startStep('Scanning for /gsd:* commands');
   const gsdCommands = scanGsdCommands(gsdResult.path!);
-  console.log(`  ✓ Found ${gsdCommands.length} commands`);
+  progress.log(`Found ${gsdCommands.length} commands`, 'success');
+  progress.endStep();
 
   if (gsdCommands.length === 0) {
-    console.log('\n✓ No commands to transpile');
+    if (verbosity !== VerbosityLevel.QUIET) {
+      console.log('\n✓ No commands to transpile');
+    }
     process.exit(0);
   }
 
-  console.log('→ Transpiling commands...');
+  progress.startStep('Transpiling commands');
 
   // Show per-command progress
   const transpileResults = [];
@@ -137,14 +158,14 @@ async function main() {
     transpileResults.push(result);
 
     if (result.success && result.command) {
-      console.log(`  ✓ ${gsdCommand.name} → ${result.command.name}`);
+      progress.log(`${gsdCommand.name} → ${result.command.name}`, 'success');
       if (result.warnings && result.warnings.length > 0) {
         result.warnings.forEach(warning => {
-          console.log(`    ⚠ ${warning}`);
+          progress.log(`  ${warning}`, 'warning');
         });
       }
     } else if (result.error) {
-      console.log(`  ✗ ${gsdCommand.name}: ${result.error}`);
+      progress.log(`${gsdCommand.name}: ${result.error}`, 'error');
     }
   }
 
@@ -162,21 +183,23 @@ async function main() {
 
   const transpileResult = { successful, failed, warnings };
 
-  console.log(`  ✓ ${transpileResult.successful.length} successful`);
+  progress.log(`${transpileResult.successful.length} successful`, 'success');
 
   if (transpileResult.failed.length > 0) {
-    console.log(`  ✗ ${transpileResult.failed.length} failed:`);
+    progress.log(`${transpileResult.failed.length} failed:`, 'error');
     transpileResult.failed.slice(0, 5).forEach((failure) => {
-      console.log(`    - ${failure.name}: ${failure.error}`);
+      progress.log(`  ${failure.name}: ${failure.error}`, 'error');
     });
     if (transpileResult.failed.length > 5) {
-      console.log(`    ... and ${transpileResult.failed.length - 5} more`);
+      progress.log(`  ... and ${transpileResult.failed.length - 5} more`, 'error');
     }
   }
 
   if (transpileResult.warnings.length > 0) {
-    console.log(`  ⚠ ${transpileResult.warnings.length} warnings (see above for details)`);
+    progress.log(`${transpileResult.warnings.length} warnings (see above for details)`, 'warning');
   }
+
+  progress.endStep();
 
   // Rotate install log if needed (daily rotation)
   await rotateLogsIfNeeded('install.log').catch(err =>
@@ -221,7 +244,7 @@ async function main() {
     console.warn('Failed to write install log:', logError instanceof Error ? logError.message : String(logError));
   }
 
-  console.log('→ Writing to OpenCode...');
+  progress.startStep('Writing to OpenCode');
   const existingCommands = readCommands(opencodeResult.path!);
 
   // Add /gsdo command to the transpiled commands
@@ -233,10 +256,11 @@ async function main() {
     allNewCommands
   );
   writeCommands(opencodeResult.path!, mergedCommands);
-  console.log(`  ✓ ${opencodeResult.path}/commands.json updated`);
+  progress.log(`${opencodeResult.path}/commands.json updated`, 'success');
+  progress.endStep();
 
   // Auto-enhance commands after installation
-  console.log('→ Enhancing commands with /gsdo...');
+  progress.startStep('Enhancing commands with /gsdo');
 
   try {
     // Load enhancement context
@@ -245,7 +269,7 @@ async function main() {
     // Create backup before enhancement
     const backupFilename = await backupCommandsJson(opencodeResult.path!);
     if (backupFilename) {
-      console.log(`  ✓ Backup created: ${backupFilename}`);
+      progress.log(`Backup created: ${backupFilename}`, 'success');
     }
 
     // Enhance all commands
@@ -261,10 +285,10 @@ async function main() {
 
     for (const result of enhancementResults) {
       if (result.error) {
-        console.log(`  ⚠ ${result.commandName}: ${result.error}`);
+        progress.log(`${result.commandName}: ${result.error}`, 'warning');
         failedCount++;
       } else if (result.enhanced && result.changes.length > 0) {
-        console.log(`  ✓ ${result.commandName}: ${result.changes.join(', ')}`);
+        progress.log(`${result.commandName}: ${result.changes.join(', ')}`, 'success');
         enhancedCount++;
       } else {
         unchangedCount++;
@@ -306,12 +330,14 @@ async function main() {
       console.warn('Failed to write enhancement log:', err)
     );
 
-    console.log(`  ✓ ${enhancedCount} commands enhanced, ${failedCount} failed`);
+    progress.log(`${enhancedCount} commands enhanced, ${failedCount} failed`, 'success');
   } catch (error) {
     // Non-blocking: enhancement failure doesn't prevent installation success
-    console.log('  ⚠ Enhancement unavailable:', error instanceof Error ? error.message : String(error));
-    console.log('  → Commands installed but not enhanced');
+    progress.log(`Enhancement unavailable: ${error instanceof Error ? error.message : String(error)}`, 'warning');
+    progress.log('Commands installed but not enhanced', 'info');
   }
+
+  progress.endStep();
 
   // Update import state for next run
   const finalState = buildCurrentState(gsdResult.path!);
@@ -327,11 +353,19 @@ async function main() {
 
   writeImportState(finalState);
 
-  console.log('\n✓ Installation complete');
-  console.log(
-    `  ${transpileResult.successful.length + 1} GSD commands available in OpenCode`
-  );
-  console.log('  Run /gsdo in OpenCode to re-enhance commands anytime');
+  // Render success screen
+  const successData: SuccessScreenData = {
+    commandsInstalled: transpileResult.successful.length + 1, // +1 for /gsdo
+    gsdPath: gsdResult.path!,
+    opencodePath: opencodeResult.path!,
+    cacheStatus: cacheResult.cached ? (cacheResult.stale ? 'stale' : 'fresh') : 'unavailable',
+    partialSuccess: transpileResult.failed.length > 0 || transpileResult.warnings.length > 0,
+    failedCount: transpileResult.failed.length,
+    warningCount: transpileResult.warnings.length
+  };
+
+  console.log(''); // Blank line before success screen
+  renderSuccessScreen(successData);
 }
 
 // Run main and handle errors
