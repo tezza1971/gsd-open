@@ -1,149 +1,179 @@
-# GSD Open (gsdo)
+# GSD Open
 
-> A context-migration utility for open-source AI platforms.
+A frictionless installer that migrates GSD commands from Claude Code to OpenCode.
 
-**GSD Open** is a cross-platform context transporter. It takes the
-high-end context engineering of
-[Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) and
-transpiles it for open-source and alternative AI platforms.
+## What It Does
 
-When your Claude Code token usage is high and you need to use alternative
-tools, `gsdo` ensures your fallback tools have been briefed on your mission.
-This is your gateway to structured context engineering across different AI
-platforms.
+GSD Open takes the `/gsd:*` commands from your [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) installation in Claude Code and transpiles them for OpenCode. Run `npx gsd-open` and your GSD commands become available in OpenCode as `/gsd-*` commands.
 
-## The Workflow
+This is a **best-effort migration**, not perfect parity. It gets you 80% of the way there. Some commands may need manual adjustment.
 
-1. **GSD Detection:** Finds your GSD installation at `~/.claude/` (or asks where
-   it's located). Checks freshness and offers to update if needed.
-2. **Platform Detection:** Scans your system for supported platforms.
-3. **Transpilation:** Parses your GSD context files into an intermediate
-   representation, then transforms them into your target platform's format.
-   Detects conflicts, backs up existing configs, asks before overwriting.
-4. **Shortfall Report:** An analysis showing what migrated and what
-   features couldn't be mapped to your target platform.
-5. **LLM Enhancement (Optional):** You can run an optional LLM pass to improve
-   the transpilation. Provide an OpenAI-compatible API key (used in-memory,
-   then discarded) and iterate until you're satisfied. No API key? We'll provide
-   guidance on running a local LLM.
+## How It Works
 
-## Supported Targets
+```
+┌─────────────────────────────────────┐
+│  npx gsd-open (Installer)           │
+│  ─────────────────────────────────  │
+│  1. Detect GSD at ~/.claude/        │
+│  2. Cache OpenCode docs             │
+│  3. Install /gsdo command           │
+│  4. Transpile /gsd:* commands       │
+│  5. Write install log               │
+│  6. Show success screen             │
+└─────────────────────────────────────┘
+                ↓
+┌─────────────────────────────────────┐
+│  /gsdo (OpenCode Command)           │
+│  ─────────────────────────────────  │
+│  1. Read install log                │
+│  2. Enhance transpiled commands     │
+│  3. Update commands in place        │
+│  4. Write enhancement log           │
+└─────────────────────────────────────┘
+```
 
-| Rank | Platform        | Status       | Notes                                                |
-| ---- | --------------- | ------------ | ---------------------------------------------------- |
-| 1    | **OpenCode**    | **v1 (MVP)** | The open-source standard for AI coding.              |
-| 2    | **Antigravity** | v2 Planned   | High capability, low cost.                           |
-| 3    | **Cursor**      | v2 Planned   | Popular AI-powered code editor.                      |
-| 4    | **Windsurf**    | v2 Planned   | Flow-state friendly.                                 |
-| 5    | **ChatLLM**     | v2 Planned   | Fallback option.                                     |
-| ?    | **VS Code**     | Researching  | Can it handle slash commands? We're looking into it. |
+The installer does algorithmic transpilation (fast, deterministic). The `/gsdo` command uses OpenCode's LLM to enhance and adapt the commands for better usability.
 
-## Documentation
-
-Full documentation is available in the [`docs/`](./docs/) folder:
-
-| Guide | Description |
-|-------|-------------|
-| [Configuration Guide](./docs/configuration.md) | Directory structure and configuration files |
-| [API Keys](./docs/api-keys.md) | Environment variables for LLM enhancement |
-| [CLI Reference](./docs/cli-reference.md) | All commands, flags, and exit codes |
-| [LLM Enhancement](./docs/llm-enhancement.md) | Optional AI-powered refinement |
-| [Transpilation](./docs/transpilation.md) | How GSD becomes OpenCode |
-| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions |
-
-## Usage
-
-Run via npx:
+## Installation
 
 ```bash
 npx gsd-open
 ```
 
-### Options
+That's it. No configuration, no prompts, no user input required.
+
+### Requirements
+
+- Node.js 20+
+- GSD installed at `~/.claude/get-shit-done/`
+- OpenCode installed on your system
+
+### What Gets Installed
+
+- Transpiled `/gsd-*` commands in `~/.config/opencode/commands.json`
+- `/gsdo` enhancement command
+- Install log at `~/.gsdo/install.log`
+- Cached OpenCode docs at `~/.gsdo/cache/`
+
+## Usage
+
+### First Time
+
+```bash
+# Install and transpile
+npx gsd-open
+
+# Open OpenCode and enhance commands
+/gsdo
+```
+
+### Updates
+
+Run `npx gsd-open` again anytime you update GSD in Claude Code. The installer checks timestamps and only re-transpiles if source files changed.
+
+## Command Line Options
 
 ```
 --help         Show usage information
 --version      Show current version
---dry-run      Preview changes without writing anything
---quiet        Suppress output (except errors)
--v, --verbose  Verbose mode for debugging
+--dry-run      Preview changes without writing
+--quiet        Suppress output except errors
+-v, --verbose  Show detailed progress
 --detect       Run detection only (skip transpilation)
---no-enhance   Skip LLM enhancement prompt
+--force        Force re-transpilation even if unchanged
+--no-backup    Skip backup creation (dangerous)
 ```
 
-### Transpile Subcommand
+## What Gets Transpiled
 
-```bash
-gsdo transpile [options]
+| GSD Command | OpenCode Command | Status |
+|-------------|------------------|--------|
+| `/gsd:plan-phase` | `/gsd-plan-phase` | Transpiled |
+| `/gsd:execute-phase` | `/gsd-execute-phase` | Transpiled |
+| `/gsd:verify-work` | `/gsd-verify-work` | Transpiled |
+| All other `/gsd:*` | `/gsd-*` | Best effort |
 
-Options:
-  --force       Force re-transpilation even if unchanged
-  --no-backup   Skip backup (dangerous)
-  --no-enhance  Skip LLM enhancement prompt
-```
+Some commands may have warnings (parameter mismatches, unsupported features). Check the install log for details.
 
-### Exit Codes
+## Exit Codes
 
-| Code | Meaning                              |
-| ---- | ------------------------------------ |
-| 0    | Success — transpilation complete     |
-| 1    | Warnings — partial success           |
-| 2+   | Errors — something went wrong        |
+| Code | Meaning |
+|------|---------|
+| 0 | Success — transpilation complete |
+| 1 | Warnings — partial success |
+| 2+ | Errors — something went wrong |
 
-## LLM Enhancement
+## File Locations
 
-After transpilation, gsdo can optionally enhance results using an LLM. Set one of these environment variables:
-
-| Provider | Environment Variable |
-|----------|---------------------|
-| OpenAI | `OPENAI_API_KEY` |
-| Google Gemini | `GEMINI_API_KEY` or `GOOGLE_API_KEY` |
-| Anthropic | `ANTHROPIC_API_KEY` |
-| OpenRouter | `OPENROUTER_API_KEY` |
-| Azure OpenAI | `AZURE_OPENAI_API_KEY` + `AZURE_OPENAI_ENDPOINT` |
-
-See [API Keys Guide](./docs/api-keys.md) for complete setup instructions.
-
-No API key? gsdo will suggest local LLM alternatives (Ollama, LM Studio, llama.cpp).
-
-## Architecture
+All GSD Open state lives in `~/.gsdo/`:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  ALGORITHMIC PASS (always runs)                     │
-│  - Quiet transpilation                              │
-│  - Basic shortfall report                           │
-└─────────────────────────────────────────────────────┘
-                        ↓
-          "Want to enhance with LLM?"
-                        ↓
-┌─────────────────────────────────────────────────────┐
-│  LLM PASS (optional)                                │
-│  - Reviews algorithmic attempt                      │
-│  - Interactive refinement loop                      │
-│  - Richer final report                              │
-└─────────────────────────────────────────────────────┘
+~/.gsdo/
+├── last-imported-gsd      # Timestamp for idempotency
+├── install.log            # Installation log (timestamped)
+├── gsdo.log               # Enhancement log (timestamped)
+└── cache/
+    └── docs-opencode/     # OpenCode docs cache (24hr TTL)
 ```
 
 ## Development Status
 
-This project is under active development. See `.planning/ROADMAP.md` for the
-current status and phase breakdown.
+This project is under active development. Current phase: **Phase 5 (LLM Enhancement)**.
 
-**Current phase:** Phase 5 - LLM Enhancement (final phase)
-**Requirements:** 28 total across 5 phases
-**Progress:** Phases 1-4 complete, Phase 5 in verification
+See `.planning/ROADMAP.md` for detailed status and phase breakdown.
+
+## Current Target
+
+GSD Open currently targets **OpenCode** only. Future versions may support other platforms (Antigravity, Cursor, Windsurf).
+
+## Troubleshooting
+
+### GSD Not Found
+
+If the installer can't find GSD, make sure it's installed at `~/.claude/get-shit-done/`. Custom GSD locations are not supported.
+
+### OpenCode Not Found
+
+The installer looks for OpenCode config at:
+1. `.opencode/` (current directory)
+2. `~/.config/opencode/` (Linux/Mac)
+3. `%APPDATA%/opencode/` (Windows)
+
+If OpenCode is installed elsewhere, the installer will fail. Make sure OpenCode is properly installed first.
+
+### Commands Not Working
+
+After running the installer, run `/gsdo` in OpenCode to enhance the commands. The algorithmic transpilation produces working but rough commands—the LLM enhancement makes them production-ready.
+
+### Force Re-transpilation
+
+To force re-transpilation even if source files haven't changed:
+
+```bash
+# Delete timestamp file
+rm ~/.gsdo/last-imported-gsd
+
+# Or use --force flag
+npx gsd-open --force
+```
+
+## Architecture Notes
+
+- **Zero dependencies**: Installer uses only Node.js built-in modules
+- **Cross-platform**: Works on Windows, Mac, Linux
+- **Idempotent**: Can run multiple times safely
+- **Fast**: Completes in < 10 seconds
+- **Autonomous**: No user input required
 
 ## License
 
 MIT
 
-## Contribute
+## Contributing
 
-If you find a bug or have a feature request, please open an issue or submit a
-pull request.
+Found a bug or have a feature request? Open an issue or submit a pull request.
 
 ## Acknowledgments
 
-- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) — The OG
-- [OpenCode](https://opencode.ai/) — v1 target platform
+- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) — The original context engineering framework
+- [OpenCode](https://opencode.ai/) — The open-source AI coding platform
