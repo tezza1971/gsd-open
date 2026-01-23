@@ -1,15 +1,15 @@
 /**
  * Enhancement Engine Core
  *
- * Handles context loading, backup, and persistence for command enhancement.
- * Coordinates file I/O operations needed for LLM-powered enhancement.
+ * Handles context loading and persistence for command enhancement.
+ * Writes enhanced commands to individual .md files.
  */
 
-import { existsSync, mkdirSync } from 'node:fs';
-import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { detectGsd, detectOpenCode } from '../detector.js';
-import { readCommands, writeCommands, writeCommandFiles } from '../installer/commands-manager.js';
+import { writeCommandFiles } from '../installer/commands-manager.js';
 import { getDocsOpenCodeCachePath } from '../cache/paths.js';
 import { resolveHome } from '../paths.js';
 import type { EnhancementContext } from './types.js';
@@ -63,69 +63,17 @@ export async function loadEnhancementContext(): Promise<EnhancementContext> {
     console.warn('Failed to read OpenCode docs cache:', error);
   }
 
-  // Load current commands (graceful: empty array if missing)
-  let commands: OpenCodeCommand[] = [];
-  try {
-    commands = readCommands(opencodeConfigPath);
-  } catch (error) {
-    // Silently continue with empty commands array
-    console.warn('Failed to read commands.json:', error);
-  }
-
   return {
     installLog,
     opencodeDocsCache,
     gsdSkillsPath,
     opencodeConfigPath,
-    commands,
+    commands: [],
   };
 }
 
 /**
- * Creates timestamped backup of commands.json before modifications.
- * Backup format: commands.json.YYYY-MM-DDTHH-mm-ss.backup
- *
- * @param opencodeConfigPath - Path to OpenCode config directory
- * @returns Backup filename (empty string if commands.json doesn't exist)
- * @throws Error if backup write fails
- */
-export async function backupCommandsJson(
-  opencodeConfigPath: string
-): Promise<string> {
-  // Read current commands (returns [] if file doesn't exist)
-  const commands = readCommands(opencodeConfigPath);
-
-  // Skip backup if no commands exist
-  if (commands.length === 0) {
-    const commandsPath = join(opencodeConfigPath, 'commands.json');
-    if (!existsSync(commandsPath)) {
-      return '';
-    }
-  }
-
-  // Generate timestamped filename
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/:/g, '-')
-    .replace(/\.\d{3}Z$/, '');
-  const backupFilename = `commands.json.${timestamp}.backup`;
-  const backupPath = join(opencodeConfigPath, backupFilename);
-
-  // Write backup
-  try {
-    const json = JSON.stringify(commands, null, 2);
-    await writeFile(backupPath, json, 'utf-8');
-    return backupFilename;
-  } catch (error) {
-    throw new Error(
-      `Failed to create backup at ${backupPath}: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
-}
-
-/**
- * Writes enhanced commands to commands.json.
- * Wrapper around commands-manager for consistency with enhancement API.
+ * Writes enhanced commands to individual .md files.
  *
  * @param opencodeConfigPath - Path to OpenCode config directory
  * @param commands - Enhanced commands to persist
@@ -135,6 +83,5 @@ export function writeEnhancedCommands(
   opencodeConfigPath: string,
   commands: OpenCodeCommand[]
 ): void {
-  writeCommands(opencodeConfigPath, commands);
   writeCommandFiles(opencodeConfigPath, commands);
 }

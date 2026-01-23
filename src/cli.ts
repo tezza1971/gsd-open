@@ -10,33 +10,15 @@
  * 4. Cache OpenCode documentation
  * 5. Scan GSD commands from skills/
  * 6. Transpile commands to OpenCode format
- * 7. Merge with existing commands
- * 8. Write updated commands.json
- * 9. Update import state
+ * 7. Write commands as individual .md files
+ * 8. Update import state
  */
 
 import { detectGsd, detectOpenCode } from './lib/detector.js';
 import { scanGsdCommands } from './lib/transpiler/scanner.js';
 import { convertCommand } from './lib/transpiler/converter.js';
-import {
-  readCommands,
-  mergeCommands,
-  writeCommands,
-  writeCommandFiles,
-  createGsdoCommand,
-} from './lib/installer/commands-manager.js';
+import { writeCommandFiles } from './lib/installer/commands-manager.js';
 import { ensureOpenCodeDocsCache } from './lib/cache/manager.js';
-import {
-  loadEnhancementContext,
-  backupCommandsJson,
-  writeEnhancedCommands,
-} from './lib/enhancer/engine.js';
-import { enhanceAllCommands } from './lib/enhancer/enhancer.js';
-import {
-  writeEnhancementLog,
-  type EnhancementLogEntry,
-  type CommandEnhancementLogEntry,
-} from './lib/logger/gsdo-logger.js';
 import { readImportState, writeImportState, buildCurrentState } from './lib/idempotency/state-manager.js';
 import { checkFreshness } from './lib/idempotency/freshness-checker.js';
 import { getDocsOpenCodeCachePath } from './lib/cache/paths.js';
@@ -256,104 +238,10 @@ async function main() {
   }
 
   progress.startStep('Writing to OpenCode');
-  const existingCommands = readCommands(opencodeResult.path!);
-
-  // Add /gsdo command to the transpiled commands
-  const gsdoCommand = createGsdoCommand();
-  const allNewCommands = [...transpileResult.successful, gsdoCommand];
-
-  const mergedCommands = mergeCommands(
-    existingCommands,
-    allNewCommands
-  );
-  writeCommands(opencodeResult.path!, mergedCommands);
-  writeCommandFiles(opencodeResult.path!, mergedCommands);
-  progress.log(`${opencodeResult.path}/commands.json updated`, 'success');
+  writeCommandFiles(opencodeResult.path!, transpileResult.successful);
   progress.log(`${opencodeResult.path}/command/*.md files created`, 'success');
   progress.endStep();
 
-  // Auto-enhance commands after installation
-  progress.startStep('Enhancing commands with /gsdo');
-
-  try {
-    // Load enhancement context
-    const enhancementContext = await loadEnhancementContext();
-
-    // Create backup before enhancement
-    const backupFilename = await backupCommandsJson(opencodeResult.path!);
-    if (backupFilename) {
-      progress.log(`Backup created: ${backupFilename}`, 'success');
-    }
-
-    // Enhance all commands
-    const enhancementResults = await enhanceAllCommands(
-      enhancementContext,
-      opencodeResult.path!
-    );
-
-    // Display per-command results
-    let enhancedCount = 0;
-    let failedCount = 0;
-    let unchangedCount = 0;
-
-    for (const result of enhancementResults) {
-      if (result.error) {
-        progress.log(`${result.commandName}: ${result.error}`, 'warning');
-        failedCount++;
-      } else if (result.enhanced && result.changes.length > 0) {
-        progress.log(`${result.commandName}: ${result.changes.join(', ')}`, 'success');
-        enhancedCount++;
-      } else {
-        unchangedCount++;
-      }
-    }
-
-    // Write enhanced commands back
-    writeEnhancedCommands(opencodeResult.path!, enhancementContext.commands);
-
-    // Rotate enhancement log if needed (daily rotation)
-    await rotateLogsIfNeeded('gsdo.log').catch(err =>
-      console.warn('Log rotation failed:', err)
-    );
-
-    // Write enhancement log
-    const enhancementLogEntry: EnhancementLogEntry = {
-      timestamp: new Date().toISOString(),
-      summary: `Enhanced ${enhancedCount} of ${enhancementResults.length} commands`,
-      results: enhancementResults.map(
-        (r): CommandEnhancementLogEntry => ({
-          commandName: r.commandName,
-          enhanced: r.enhanced,
-          changes: r.changes,
-          reasoning: r.reasoning,
-          before: r.before,
-          after: r.after,
-          error: r.error,
-        })
-      ),
-      metadata: {
-        enhanced: enhancedCount,
-        unchanged: unchangedCount,
-        failed: failedCount,
-      },
-    };
-
-    // Non-blocking log write
-    writeEnhancementLog(enhancementLogEntry).catch((err) =>
-      console.warn('Failed to write enhancement log:', err)
-    );
-
-    progress.log(`${enhancedCount} commands enhanced, ${failedCount} failed`, 'success');
-  } catch (error) {
-    // Non-blocking: enhancement failure doesn't prevent installation success
-    const formatted = formatError(ErrorCategory.ENHANCEMENT_FAILURE, {
-      error: error instanceof Error ? error.message : String(error)
-    });
-    progress.log(`WARNING: ${formatted.message}`, 'warning');
-    progress.log(formatted.resolution, 'info');
-  }
-
-  progress.endStep();
 
   // Update import state for next run
   const finalState = buildCurrentState(gsdResult.path!);
@@ -371,7 +259,7 @@ async function main() {
 
   // Render success screen
   const successData: SuccessScreenData = {
-    commandsInstalled: transpileResult.successful.length + 1, // +1 for /gsdo
+    commandsInstalled: transpileResult.successful.length,
     gsdPath: gsdResult.path!,
     opencodePath: opencodeResult.path!,
     cacheStatus: cacheResult.cached ? (cacheResult.stale ? 'stale' : 'fresh') : 'unavailable',
