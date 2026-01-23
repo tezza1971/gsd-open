@@ -15,8 +15,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Core Installer** - Detection, basic transpilation, and OpenCode integration
 - [x] **Phase 2: Documentation Cache** - Fetch and cache OpenCode docs for LLM context
 - [x] **Phase 3: /gsdo Command** - Install LLM enhancement command in OpenCode
-- [ ] **Phase 4: Enhanced Transpilation** - Template extraction and variable parsing
-- [ ] **Phase 5: Idempotency** - Version tracking and skip-if-unchanged logic
+- [x] **Phase 4: Enhanced Transpilation** - Template extraction and variable parsing
+- [x] **Phase 5: Idempotency** - Version tracking and skip-if-unchanged logic
 - [ ] **Phase 6: Exit Logging** - Detailed logs and /gsdo enhancement output
 - [ ] **Phase 7: Polish** - Error messages, ASCII art, and cross-platform refinement
 
@@ -105,11 +105,11 @@ Plans:
   3. User sees "Already up to date" message when installer skips work
   4. Installer updates `last-imported-gsd` file after successful transpilation
   5. Installer uses caching to avoid redundant work (docs, transpilation)
-**Plans**: 2 plans
+**Plans**: 2 plans complete
 
 Plans:
-- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
-- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
+- [x] 05-01: State file infrastructure for tracking import history
+- [x] 05-02: Freshness checking and CLI integration with skip logic
 
 ### Phase 6: Exit Logging
 **Goal**: All installer and /gsdo activity is logged in detailed, readable format
@@ -156,6 +156,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Documentation Cache | 2/2 | ✓ Complete | 2026-01-22 |
 | 3. /gsdo Command | 3/3 | ✓ Complete | 2026-01-22 |
 | 4. Enhanced Transpilation | 3/3 | ✓ Complete | 2026-01-23 |
-| 5. Idempotency | 0/TBD | Not started | - |
+| 5. Idempotency | 2/2 | ✓ Complete | 2026-01-23 |
 | 6. Exit Logging | 0/TBD | Not started | - |
 | 7. Polish | 0/TBD | Not started | - |

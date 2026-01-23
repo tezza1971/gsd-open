@@ -14,10 +14,10 @@
 
 ### Idempotency
 
-- [ ] **IDEM-01**: Installer checks `~/.gsdo/last-imported-gsd` for previous import timestamp
-- [ ] **IDEM-02**: Installer skips re-transpilation if GSD source unchanged
-- [ ] **IDEM-03**: Installer shows "Already up to date" message when skipping
-- [ ] **IDEM-04**: Installer updates `last-imported-gsd` file after successful transpilation
+- [x] **IDEM-01**: Installer checks `~/.gsdo/last-imported-gsd` for previous import timestamp
+- [x] **IDEM-02**: Installer skips re-transpilation if GSD source unchanged
+- [x] **IDEM-03**: Installer shows "Already up to date" message when skipping
+- [x] **IDEM-04**: Installer updates `last-imported-gsd` file after successful transpilation
 
 ### Documentation Caching
 
@@ -79,8 +79,8 @@
 ### Performance
 
 - [ ] **PERF-01**: Installer completes in < 10 seconds for typical GSD installation
-- [ ] **PERF-02**: Installer uses caching to avoid redundant work
-- [ ] **PERF-03**: Installer skips unnecessary transpilation via idempotency checks
+- [x] **PERF-02**: Installer uses caching to avoid redundant work
+- [x] **PERF-03**: Installer skips unnecessary transpilation via idempotency checks
 
 ### Cross-Platform Support
 
