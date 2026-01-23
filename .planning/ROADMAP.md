@@ -35,6 +35,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans complete
 
 Plans:
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 - [x] 01-01: Detection Infrastructure
 - [x] 01-02: Transpilation Engine
 - [x] 01-03: OpenCode Integration
@@ -51,6 +53,8 @@ Plans:
 **Plans**: 2 plans complete
 
 Plans:
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 - [x] 02-01: Cache Infrastructure & Download
 - [x] 02-02: Cache Management & Integration
 
@@ -67,6 +71,8 @@ Plans:
 **Plans**: 3 plans complete
 
 Plans:
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 - [x] 03-01: Enhancement engine core with context loading and backup
 - [x] 03-02: LLM integration and per-command enhancement logic
 - [x] 03-03: /gsdo command installation and CLI integration
@@ -83,6 +89,8 @@ Plans:
 **Plans**: 3 plans complete
 
 Plans:
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 - [x] 04-01: Template Extraction - Extract clean prompt templates from GSD markdown
 - [x] 04-02: Variable Parser - Parse {{var}} patterns and add to schema
 - [x] 04-03: Verbose Progress & Error Handling - Enhanced CLI output with partial success display
@@ -97,10 +105,11 @@ Plans:
   3. User sees "Already up to date" message when installer skips work
   4. Installer updates `last-imported-gsd` file after successful transpilation
   5. Installer uses caching to avoid redundant work (docs, transpilation)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 
 ### Phase 6: Exit Logging
 **Goal**: All installer and /gsdo activity is logged in detailed, readable format
@@ -113,10 +122,11 @@ Plans:
   4. /gsdo fixes naming issues, improves prompt templates, adds missing parameters, and fixes broken references
   5. /gsdo updates `commands.json` in place with enhanced commands
   6. Both logs rotate automatically (keep only past 7 days)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 
 ### Phase 7: Polish
 **Goal**: Installer provides excellent UX with clear messaging and fast performance
@@ -129,10 +139,11 @@ Plans:
   4. Error messages are specific and actionable (e.g., "GSD not found at ~/.claude/get-shit-done/")
   5. Partial success transparently shows what worked and what didn't
   6. Installer adapts command naming based on platform filesystem limitations
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD
+- [ ] 05-01-PLAN.md — State file infrastructure for tracking import history
+- [ ] 05-02-PLAN.md — Freshness checking and CLI integration with skip logic
 
 ## Progress
 
