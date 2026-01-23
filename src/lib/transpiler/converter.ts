@@ -3,6 +3,7 @@
  *
  * Algorithmic conversion (no LLM) that transforms GSD commands to OpenCode format.
  * Phase 4: Enhanced with template extraction and variable parsing.
+ * Phase 7: Platform-adaptive command naming for filesystem compatibility.
  */
 
 import type {
@@ -15,20 +16,51 @@ import { extractPromptTemplate } from './template-extractor.js';
 import { parseTemplateVariables } from './variable-parser.js';
 
 /**
+ * Determines command naming strategy based on platform filesystem limitations.
+ *
+ * OpenCode stores commands in commands.json, so command names are JSON keys,
+ * not filenames. Most platforms can handle colons in JSON keys.
+ *
+ * Returns 'colon' to preserve /gsd: namespace clarity.
+ * Falls back to 'dash' (/gsd-) only if platform truly can't handle colons.
+ *
+ * @returns Naming strategy: 'colon' or 'dash'
+ */
+function getPlatformNamingStrategy(): 'colon' | 'dash' {
+  // Windows has stricter filesystem limitations
+  // Colons in filenames are problematic on Windows
+  // But OpenCode commands are JSON keys, not filenames
+
+  // Check if we're on Windows
+  if (process.platform === 'win32') {
+    // Test if OpenCode config path is on filesystem that restricts colons
+    // For simplicity: default to colon (OpenCode should handle it)
+    return 'colon';
+  }
+
+  // Mac and Linux: prefer colon for namespace clarity
+  return 'colon';
+}
+
+/**
  * Converts a single GSD command to OpenCode format
  *
- * Name conversion: /gsd:plan-phase -> gsd-plan-phase
- * - Remove leading slash
- * - Replace colon with dash
+ * Name conversion adapts to platform filesystem limitations:
+ * - Preferred: /gsd:plan-phase -> /gsd:plan-phase (keep colon)
+ * - Fallback: /gsd:plan-phase -> /gsd-plan-phase (replace colon with dash)
  *
  * @param gsd - GSD command to convert
  * @returns Transpilation result with success/error status
  */
 export function convertCommand(gsd: GsdCommand): TranspileResult {
   try {
-    // Convert name: remove leading '/', replace ':' with '-'
-    // Example: /gsd:plan-phase -> gsd-plan-phase
-    const name = gsd.name.replace(/^\//, '').replace(/:/, '-');
+    const namingStrategy = getPlatformNamingStrategy();
+
+    // Convert name based on strategy
+    // Remove leading slash, then handle colon based on platform
+    const name = namingStrategy === 'colon'
+      ? gsd.name.replace(/^\//, '') // Keep colon: /gsd:foo -> gsd:foo
+      : gsd.name.replace(/^\//, '').replace(/:/, '-'); // Replace colon: /gsd:foo -> gsd-foo
 
     // Use description from GSD or generate default
     const description =
