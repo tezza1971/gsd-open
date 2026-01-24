@@ -74,6 +74,18 @@ async function main() {
   );
   progress.endStep();
 
+  // Always write fresh /gsdo command, regardless of other changes
+  // This ensures the user always has the latest /gsdo available
+  progress.startStep('Updating /gsdo command');
+  try {
+    const gsdoCommand = createGsdoCommand();
+    writeCommandFiles(opencodeResult.path!, [gsdoCommand]);
+    progress.log(`${opencodeResult.path}/command/gsdo.md created`, 'success');
+  } catch (error) {
+    progress.log(`Failed to write /gsdo command: ${error instanceof Error ? error.message : String(error)}`, 'warning');
+  }
+  progress.endStep();
+
   // Clean up old transpiled commands when forcing refresh
   if (forceRefresh) {
     progress.startStep('Cleaning up old transpiled commands');
@@ -274,12 +286,6 @@ async function main() {
     console.warn(formatted.resolution);
   }
 
-  progress.startStep('Writing /gsdo command to OpenCode');
-  const gsdoCommand = createGsdoCommand();
-  // Only write the /gsdo transpiler command - /gsdo itself will create the transpiled GSD commands
-  writeCommandFiles(opencodeResult.path!, [gsdoCommand]);
-  progress.log(`${opencodeResult.path}/command/gsdo.md created`, 'success');
-  progress.endStep();
 
 
   // Update import state for next run
