@@ -1,12 +1,17 @@
-# GSD Open
+# GSD Open (a work in progress)
 
-A frictionless installer that migrates GSD commands from Claude Code to OpenCode.
+A frictionless installer that migrates GSD commands from Claude Code to
+OpenCode.
 
 ## What It Does
 
-GSD Open takes the `/gsd:*` commands from your [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) installation in Claude Code and transpiles them for OpenCode. Run `npx gsd-open` and your GSD commands become available in OpenCode as `/gsd-*` commands.
+GSD Open takes the `/gsd:*` commands from your
+[Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done)
+installation in Claude Code and transpiles them for OpenCode. Run `npx gsd-open`
+and your GSD commands become available in OpenCode as `/gsd-*` commands.
 
-This is a **best-effort migration**, not perfect parity. It gets you 80% of the way there. Some commands may need manual adjustment.
+This is a **best-effort migration**, not perfect parity. It gets you 80% of the
+way there. Some commands may need manual adjustment.
 
 ## How It Works
 
@@ -32,7 +37,9 @@ This is a **best-effort migration**, not perfect parity. It gets you 80% of the 
 └─────────────────────────────────────┘
 ```
 
-The installer does algorithmic transpilation (fast, deterministic). The `/gsdo` command uses OpenCode's LLM to enhance and adapt the commands for better usability.
+The installer does algorithmic transpilation (fast, deterministic). The `/gsdo`
+command uses OpenCode's LLM to enhance and adapt the commands for better
+usability.
 
 ## Installation
 
@@ -67,9 +74,18 @@ npx gsd-open
 /gsdo
 ```
 
+> **Tip: Use your best model for `/gsdo`**
+>
+> The `/gsdo` command uses OpenCode's LLM to transpile GSD commands. Results
+> vary significantly based on which model you have configured. For best results,
+> ensure your most capable model (Claude Sonnet 3.5/4, GPT-4o, etc.) is active
+> in OpenCode before running `/gsdo`. Smaller or faster models may produce
+> lower-quality transpilations that require more manual adjustment.
+
 ### Updates
 
-Run `npx gsd-open` again anytime you update GSD in Claude Code. The installer checks timestamps and only re-transpiles if source files changed.
+Run `npx gsd-open` again anytime you update GSD in Claude Code. The installer
+checks timestamps and only re-transpiles if source files changed.
 
 ## Command Line Options
 
@@ -86,22 +102,23 @@ Run `npx gsd-open` again anytime you update GSD in Claude Code. The installer ch
 
 ## What Gets Transpiled
 
-| GSD Command | OpenCode Command | Status |
-|-------------|------------------|--------|
-| `/gsd:plan-phase` | `/gsd-plan-phase` | Transpiled |
-| `/gsd:execute-phase` | `/gsd-execute-phase` | Transpiled |
-| `/gsd:verify-work` | `/gsd-verify-work` | Transpiled |
-| All other `/gsd:*` | `/gsd-*` | Best effort |
+| GSD Command          | OpenCode Command     | Status      |
+| -------------------- | -------------------- | ----------- |
+| `/gsd:plan-phase`    | `/gsd-plan-phase`    | Transpiled  |
+| `/gsd:execute-phase` | `/gsd-execute-phase` | Transpiled  |
+| `/gsd:verify-work`   | `/gsd-verify-work`   | Transpiled  |
+| All other `/gsd:*`   | `/gsd-*`             | Best effort |
 
-Some commands may have warnings (parameter mismatches, unsupported features). Check the install log for details.
+Some commands may have warnings (parameter mismatches, unsupported features).
+Check the install log for details.
 
 ## Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success — transpilation complete, no errors |
-| 1 | Failure — GSD or OpenCode not found, critical errors |
-| 2 | Partial success — some commands failed, but installation completed |
+| Code | Meaning                                                            |
+| ---- | ------------------------------------------------------------------ |
+| 0    | Success — transpilation complete, no errors                        |
+| 1    | Failure — GSD or OpenCode not found, critical errors               |
+| 2    | Partial success — some commands failed, but installation completed |
 
 ## File Locations
 
@@ -127,32 +144,39 @@ All GSD Open state lives in `~/.gsdo/`:
 - Zero external dependencies
 - Cross-platform support (Windows, macOS, Linux)
 
-This is a production-ready initial release. See `.planning/MILESTONES.md` for detailed accomplishments.
+This is a production-ready initial release. See `.planning/MILESTONES.md` for
+detailed accomplishments.
 
 For next milestone planning, see the planning directory.
 
 ## Current Target
 
-GSD Open currently targets **OpenCode** only. Future versions may support other platforms (Antigravity, Cursor, Windsurf).
+GSD Open currently targets **OpenCode** only. Future versions may support other
+platforms (Antigravity, Cursor, Windsurf).
 
 ## Troubleshooting
 
 ### GSD Not Found
 
-If the installer can't find GSD, make sure it's installed at `~/.claude/get-shit-done/`. Custom GSD locations are not supported.
+If the installer can't find GSD, make sure it's installed at
+`~/.claude/get-shit-done/`. Custom GSD locations are not supported.
 
 ### OpenCode Not Found
 
 The installer looks for OpenCode config at:
+
 1. `.opencode/` (current directory)
 2. `~/.config/opencode/` (Linux/Mac)
 3. `%APPDATA%/opencode/` (Windows)
 
-If OpenCode is installed elsewhere, the installer will fail. Make sure OpenCode is properly installed first.
+If OpenCode is installed elsewhere, the installer will fail. Make sure OpenCode
+is properly installed first.
 
 ### Commands Not Working
 
-After running the installer, run `/gsdo` in OpenCode to enhance the commands. The algorithmic transpilation produces working but rough commands—the LLM enhancement makes them production-ready.
+After running the installer, run `/gsdo` in OpenCode to enhance the commands.
+The algorithmic transpilation produces working but rough commands—the LLM
+enhancement makes them production-ready.
 
 ### Force Re-transpilation
 
@@ -184,5 +208,6 @@ Found a bug or have a feature request? Open an issue or submit a pull request.
 
 ## Acknowledgments
 
-- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) — The original context engineering framework
+- [Get Shit Done (GSD)](https://github.com/glittercowboy/get-shit-done) — The
+  original context engineering framework
 - [OpenCode](https://opencode.ai/) — The open-source AI coding platform
